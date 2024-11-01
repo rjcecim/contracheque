@@ -110,17 +110,17 @@ function calcularSalario() {
     if (impostoDeRenda < 0) impostoDeRenda = 0;
     const tceUnimed = document.getElementById('chkD070').checked ? 0.045 * (vencimentoBase + adicTempoServico + adicQualificacaoTitulos) : 0;
     const sindicontas = document.getElementById('chkD303').checked ? 40.00 : 0;
-    const astcempMensalidade = document.getElementById('chkD019').checked ? 77.13 : 0; // Valor atualizado
-    const astcempUniodonto = document.getElementById('chkD042').checked ? 33.06 : 0;    // Valor permanece o mesmo
+    const astcempMensalidade = document.getElementById('chkD019').checked ? 77.13 : 0;
+    const astcempUniodonto = document.getElementById('chkD042').checked ? 33.06 : 0;
     const remuneracao = vencimentoBase + adicTempoServico + adicQualificacaoCursos + adicQualificacaoTitulos + abonoProdColetiva;
     const descontos = finanpreve + impostoDeRenda + tceUnimed + sindicontas + astcempMensalidade + astcempUniodonto;
     const liquidoAReceber = remuneracao - descontos;
 
     atualizarTabela([
         { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSO', valor: adicQualificacaoCursos },
-        { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC/TITULOS', valor: adicQualificacaoTitulos },
-        { rubrica: 'P331', descricao: 'ABONO PRODUTIVIDADE COLETIVA (100)', valor: abonoProdColetiva },
-        { rubrica: 'D026', descricao: 'FINANPREV-LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
+        { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC./TÍTULOS', valor: adicQualificacaoTitulos },
+        { rubrica: 'P331', descricao: 'ABONO PRODUTIVIDADE COLETIVA (100%)', valor: abonoProdColetiva },
+        { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
         { rubrica: 'D031', descricao: 'IMPOSTO DE RENDA (27,5%)', valor: impostoDeRenda },
         { rubrica: 'D070', descricao: 'TCE-UNIMED BELÉM', valor: tceUnimed },
         { rubrica: 'D303', descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO', valor: sindicontas },
