@@ -1,0 +1,10 @@
+/* style.css */
+/* Personalize conforme necessário, o Bootstrap já fornece estilos padrão */
+body {
+    background-color: #f7f7f7;
+}
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
