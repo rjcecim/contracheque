@@ -1,10 +1,70 @@
 /* style.css */
-/* Personalize conforme necessário, o Bootstrap já fornece estilos padrão */
+
+/* Aplica a fonte 'Roboto' em todo o corpo da página */
 body {
-    background-color: #f7f7f7;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa; /* Cor de fundo suave */
 }
+
+/* Estiliza o container principal */
 .container {
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estiliza o título principal */
+h1 {
+    font-weight: 700;
+    color: #343a40;
+}
+
+/* Estiliza as labels dos formulários */
+label {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Ajusta o input do ADIC.TEMPO SERVIÇO */
+#adicTempoServico {
+    display: inline-block;
+    width: 70px !important;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* Estiliza a tabela */
+.table {
+    margin-top: 20px;
+}
+
+.table thead th {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+/* Estiliza os checkboxes */
+.form-check-label {
+    margin-left: 5px;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 576px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-group {
+        width: 100%;
+    }
+    
+    #adicTempoServico {
+        width: 100% !important;
+        margin-top: 5px;
+    }
 }
