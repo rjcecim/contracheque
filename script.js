@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('desconto4').addEventListener('change', calcularSalario);
     document.getElementById('titulos').addEventListener('change', calcularSalario);
     document.getElementById('cursos').addEventListener('change', calcularSalario);
+    document.getElementById('apcPercent').addEventListener('input', calcularSalario);
 
     // Evento para adicionar novos campos de reajuste
     document.getElementById('addReajusteBtn').addEventListener('click', adicionarReajuste);
@@ -105,6 +106,8 @@ function calcularSalario() {
     const adicTempoServicoInput = document.getElementById('adicTempoServico');
     const titulosSelect = document.getElementById('titulos');
     const cursosSelect = document.getElementById('cursos');
+    const apcPercentInput = document.getElementById('apcPercent');
+
     let adicTempoServicoPercentual = parseFloat(adicTempoServicoInput.value) / 100;
 
     // Limitar o valor máximo a 60% e mínimo a 0%
@@ -167,7 +170,21 @@ function calcularSalario() {
 
     const adicTempoServico = adicTempoServicoPercentual * (vencimentoBase + adicQualificacaoTitulos);
     document.getElementById('valorP031').textContent = formatarComoMoeda(adicTempoServico);
-    const abonoProdColetiva = 0.70 * vencimentoBase;
+
+    // Cálculo do Abono Produtividade Coletiva
+    let apcPercent = parseFloat(apcPercentInput.value);
+    if (isNaN(apcPercent) || apcPercent < 0) {
+        apcPercent = 0;
+        apcPercentInput.value = 0;
+    } else if (apcPercent > 100) {
+        apcPercent = 100;
+        apcPercentInput.value = 100;
+    }
+
+    const abonoBase = 0.70 * vencimentoBase;
+    const abonoProdColetiva = abonoBase * (apcPercent / 100);
+    document.getElementById('valorP331').textContent = formatarComoMoeda(abonoProdColetiva);
+
     const basePrevidencia = vencimentoBase + adicTempoServico + adicQualificacaoTitulos;
     const finanpreve = 0.14 * basePrevidencia;
 
@@ -193,7 +210,7 @@ function calcularSalario() {
     atualizarTabela([
         { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSOS', valor: adicQualificacaoCursos },
         { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC./TÍTULOS', valor: adicQualificacaoTitulos },
-        { rubrica: 'P331', descricao: 'ABONO PRODUTIVIDADE COLETIVA (100%)', valor: abonoProdColetiva },
+        // Removemos a rubrica P331 daqui, pois agora está na tabela principal
         { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
         { rubrica: 'D031', descricao: `IMPOSTO DE RENDA (${aliquotaPercentual}%)`, valor: impostoDeRenda },
         { rubrica: 'D070', descricao: 'TCE-UNIMED BELÉM', valor: tceUnimed },
@@ -210,8 +227,8 @@ function calcularSalario() {
 
 function atualizarTabela(valores) {
     const salaryTable = document.getElementById('salaryTable').getElementsByTagName('tbody')[0];
-    while (salaryTable.rows.length > 2) {
-        salaryTable.deleteRow(2);
+    while (salaryTable.rows.length > 3) { // Ajustado para não remover as três primeiras linhas
+        salaryTable.deleteRow(3);
     }
     valores.forEach(item => {
         const row = salaryTable.insertRow();

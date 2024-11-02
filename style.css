@@ -25,8 +25,8 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* Ajusta o input do ADIC. TEMPO SERVIÇO */
-#adicTempoServico {
+/* Ajusta os inputs percentuais */
+.input-percent {
     width: 70px !important;
     margin-left: 5px;
     vertical-align: middle;
@@ -55,8 +55,8 @@ h1 {
         max-width: 100%;
     }
     
-    /* Ajusta o input do ADIC. TEMPO SERVIÇO em telas menores */
-    #adicTempoServico {
+    /* Ajusta os inputs percentuais em telas menores */
+    .input-percent {
         width: 100% !important;
         margin-top: 5px;
     }
