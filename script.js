@@ -123,9 +123,12 @@ function calcularSalario() {
     const abonoProdColetiva = 0.70 * vencimentoBase;
     const basePrevidencia = vencimentoBase + adicTempoServico + adicQualificacaoTitulos;
     const finanpreve = 0.14 * basePrevidencia;
+
+    // Cálculo da Base de Cálculo do IRPF
     let baseIR = vencimentoBase + adicTempoServico + adicQualificacaoCursos + adicQualificacaoTitulos + abonoProdColetiva - finanpreve;
-    let impostoDeRenda = 0.275 * baseIR - 896.00;
-    if (impostoDeRenda < 0) impostoDeRenda = 0;
+
+    // Cálculo do Imposto de Renda utilizando a tabela progressiva de 2024
+    let { impostoDeRenda, aliquota } = calcularImpostoDeRenda(baseIR);
 
     // Atualizar cálculo dos descontos com base nos comboboxes
     const tceUnimed = document.getElementById('desconto1').value === 'sim' ? 0.045 * (vencimentoBase + adicTempoServico + adicQualificacaoTitulos) : 0;
@@ -137,12 +140,15 @@ function calcularSalario() {
     const descontos = finanpreve + impostoDeRenda + tceUnimed + sindicontas + astcempMensalidade + astcempUniodonto;
     const liquidoAReceber = remuneracao - descontos;
 
+    // Formatar a alíquota em percentual para exibir na descrição
+    let aliquotaPercentual = (aliquota * 100).toFixed(1).replace('.', ',');
+
     atualizarTabela([
         { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSO', valor: adicQualificacaoCursos },
         { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC./TÍTULOS', valor: adicQualificacaoTitulos },
         { rubrica: 'P331', descricao: 'ABONO PRODUTIVIDADE COLETIVA (100%)', valor: abonoProdColetiva },
         { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
-        { rubrica: 'D031', descricao: 'IMPOSTO DE RENDA (27,5%)', valor: impostoDeRenda },
+        { rubrica: 'D031', descricao: `IMPOSTO DE RENDA (${aliquotaPercentual}%)`, valor: impostoDeRenda },
         { rubrica: 'D070', descricao: 'TCE-UNIMED BELÉM', valor: tceUnimed },
         { rubrica: 'D303', descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO', valor: sindicontas },
         { rubrica: 'D019', descricao: 'ASTCEMP-MENSALIDADE', valor: astcempMensalidade },
@@ -169,4 +175,31 @@ function atualizarTabela(valores) {
         cellDescricao.textContent = item.descricao;
         cellValor.textContent = formatarComoMoeda(item.valor);
     });
+}
+
+// Função para calcular o Imposto de Renda conforme a tabela progressiva de 2024
+function calcularImpostoDeRenda(baseIR) {
+    let aliquota, deducao;
+
+    if (baseIR <= 2259.20) {
+        aliquota = 0;
+        deducao = 0;
+    } else if (baseIR <= 2826.65) {
+        aliquota = 0.075;
+        deducao = 169.44;
+    } else if (baseIR <= 3751.05) {
+        aliquota = 0.15;
+        deducao = 381.44;
+    } else if (baseIR <= 4664.68) {
+        aliquota = 0.225;
+        deducao = 662.77;
+    } else {
+        aliquota = 0.275;
+        deducao = 896.00;
+    }
+
+    let impostoDeRenda = (baseIR * aliquota) - deducao;
+    if (impostoDeRenda < 0) impostoDeRenda = 0;
+
+    return { impostoDeRenda, aliquota };
 }
