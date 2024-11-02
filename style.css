@@ -33,7 +33,7 @@ label {
 /* Ajusta o input do ADIC. TEMPO SERVIÇO */
 #adicTempoServico {
     display: inline-block;
-    width: 80px !important;
+    width: 70px !important;
     margin-left: 5px;
     vertical-align: middle;
 }
@@ -52,21 +52,16 @@ label {
     vertical-align: middle;
 }
 
-/* Estiliza os inputs e selects dentro da tabela */
-.table input[type="number"] {
-    display: inline-block;
-    width: 80px !important;
-    margin-left: 5px;
-    vertical-align: middle;
+/* Remove setas dos inputs number (Chrome, Safari) */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
 }
 
-/* Estiliza os comboboxes dos descontos */
-.form-row .form-group.col-md-3 label {
-    font-size: 0.9rem;
-}
-
-.form-row .form-group.col-md-3 select {
-    font-size: 0.9rem;
+/* Remove setas dos inputs number (Firefox) */
+input[type=number] {
+    -moz-appearance: textfield;
 }
 
 /* Estiliza os selects e inputs */
@@ -93,18 +88,6 @@ select.form-control {
     background-size: 8px 10px;
 }
 
-/* Remove setas dos inputs number */
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none; 
-    margin: 0; 
-}
-
-/* Ajusta os inputs number no Firefox */
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
     .form-row .form-group.col-md-6,
@@ -124,22 +107,4 @@ input[type=number] {
     .form-row .form-group.col-md-3 label {
         margin-top: 10px;
     }
-}
-
-/* Estiliza o footer (caso deseje adicionar) */
-footer {
-    background-color: #343a40;
-    color: #fff;
-    padding: 15px 0;
-    text-align: center;
-    margin-top: 50px;
-}
-
-footer a {
-    color: #fff;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
 }
