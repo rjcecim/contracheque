@@ -49,6 +49,7 @@ h1 {
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
     .row .col-md-6,
+    .row .col-md-4,
     .row .col-md-3 {
         flex: 0 0 100%;
         max-width: 100%;
@@ -62,7 +63,8 @@ h1 {
 }
 
 @media (max-width: 576px) {
-    .row .col-md-3 label {
+    .row .col-md-3 label,
+    .row .col-md-4 label {
         margin-top: 10px;
     }
 }

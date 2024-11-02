@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('desconto2').addEventListener('change', calcularSalario);
     document.getElementById('desconto3').addEventListener('change', calcularSalario);
     document.getElementById('desconto4').addEventListener('change', calcularSalario);
+    document.getElementById('titulos').addEventListener('change', calcularSalario);
 
     // Evento para adicionar novos campos de reajuste
     document.getElementById('addReajusteBtn').addEventListener('click', adicionarReajuste);
@@ -101,6 +102,7 @@ function calcularSalario() {
     const classeSelect = document.getElementById('classe');
     const referenciaSelect = document.getElementById('referencia');
     const adicTempoServicoInput = document.getElementById('adicTempoServico');
+    const titulosSelect = document.getElementById('titulos');
     let adicTempoServicoPercentual = parseFloat(adicTempoServicoInput.value) / 100;
 
     // Limitar o valor máximo a 60% e mínimo a 0%
@@ -139,7 +141,24 @@ function calcularSalario() {
     document.getElementById('vencimentoBase').textContent = formatarComoMoeda(vencimentoBase);
 
     const adicQualificacaoCursos = 0.10 * vencimentoBase;
-    const adicQualificacaoTitulos = 0.15 * vencimentoBase;
+
+    // Ajuste no cálculo do adicional de títulos conforme a seleção
+    let percentualTitulo = 0;
+    switch (titulosSelect.value) {
+        case 'especializacao':
+            percentualTitulo = 0.15;
+            break;
+        case 'mestrado':
+            percentualTitulo = 0.25;
+            break;
+        case 'doutorado':
+            percentualTitulo = 0.35;
+            break;
+        default:
+            percentualTitulo = 0;
+    }
+    const adicQualificacaoTitulos = percentualTitulo * vencimentoBase;
+
     const adicTempoServico = adicTempoServicoPercentual * (vencimentoBase + adicQualificacaoTitulos);
     document.getElementById('valorP031').textContent = formatarComoMoeda(adicTempoServico);
     const abonoProdColetiva = 0.70 * vencimentoBase;
