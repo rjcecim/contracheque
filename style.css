@@ -66,3 +66,9 @@ h1 {
         margin-top: 10px;
     }
 }
+
+/* Estilização dos botões de reajuste */
+.add-reajuste-btn img,
+.remove-reajuste-btn img {
+    pointer-events: none;
+}

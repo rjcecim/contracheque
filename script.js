@@ -44,6 +44,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('desconto2').addEventListener('change', calcularSalario);
     document.getElementById('desconto3').addEventListener('change', calcularSalario);
     document.getElementById('desconto4').addEventListener('change', calcularSalario);
+
+    // Evento para adicionar novos campos de reajuste
+    document.getElementById('addReajusteBtn').addEventListener('click', adicionarReajuste);
+
+    // Evento para recalcular salário ao alterar os reajustes
+    document.getElementById('reajustesContainer').addEventListener('input', function(event) {
+        if (event.target.classList.contains('reajuste-input')) {
+            calcularSalario();
+        }
+    });
 });
 
 function inicializarComboboxes() {
@@ -108,11 +118,23 @@ function calcularSalario() {
         modalShown = false;
     }
 
+    let vencimentoOriginal = 0;
+
     if (cargoSelect.value && classeSelect.value && referenciaSelect.value) {
-        vencimentoBase = parseFloat(vencimentosData[cargoSelect.value][classeSelect.value][referenciaSelect.value]);
-    } else {
-        vencimentoBase = 0;
+        vencimentoOriginal = parseFloat(vencimentosData[cargoSelect.value][classeSelect.value][referenciaSelect.value]);
     }
+
+    // Aplicar os reajustes sequencialmente
+    let vencimentoReajustado = vencimentoOriginal;
+    const reajusteInputs = document.querySelectorAll('.reajuste-input');
+    reajusteInputs.forEach(input => {
+        let percentual = parseFloat(input.value.replace(',', '.')) / 100;
+        if (!isNaN(percentual) && percentual > 0) {
+            vencimentoReajustado += vencimentoReajustado * percentual;
+        }
+    });
+
+    vencimentoBase = vencimentoReajustado;
 
     document.getElementById('vencimentoBase').textContent = formatarComoMoeda(vencimentoBase);
 
@@ -203,3 +225,73 @@ function calcularImpostoDeRenda(baseIR) {
 
     return { impostoDeRenda, aliquota };
 }
+
+function adicionarReajuste() {
+    const reajustesContainer = document.getElementById('reajustesContainer');
+    const numeroReajustes = reajustesContainer.querySelectorAll('.input-group').length + 1;
+
+    const div = document.createElement('div');
+    div.classList.add('input-group', 'mb-2');
+
+    const span = document.createElement('span');
+    span.classList.add('input-group-text');
+    span.textContent = `Qual o valor do ${numeroReajustes}º reajuste?`;
+
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.classList.add('form-control', 'reajuste-input');
+    input.placeholder = '0,00';
+    input.step = '0.01';
+    input.min = '0';
+
+    const spanPercent = document.createElement('span');
+    spanPercent.classList.add('input-group-text');
+    spanPercent.textContent = '%';
+
+    // Botão para remover o reajuste
+    const removeBtn = document.createElement('button');
+    removeBtn.classList.add('btn', 'btn-outline-secondary', 'remove-reajuste-btn');
+    removeBtn.type = 'button';
+    removeBtn.innerHTML = '<img src="subtraction.svg" alt="Remover" width="20" height="20">';
+
+    // Evento para remover o reajuste
+    removeBtn.addEventListener('click', function() {
+        reajustesContainer.removeChild(div);
+        recalcularNumeroReajustes();
+        calcularSalario();
+    });
+
+    div.appendChild(span);
+    div.appendChild(input);
+    div.appendChild(spanPercent);
+    div.appendChild(removeBtn);
+
+    reajustesContainer.appendChild(div);
+}
+
+// Função para recalcular os números ordinais dos reajustes após a remoção
+function recalcularNumeroReajustes() {
+    const reajusteGroups = document.querySelectorAll('#reajustesContainer .input-group');
+    reajusteGroups.forEach((group, index) => {
+        const labelSpan = group.querySelector('.input-group-text');
+        labelSpan.textContent = `Qual o valor do ${index + 1}º reajuste?`;
+
+        // Mostrar o botão de remover apenas do 2º reajuste em diante
+        const removeBtn = group.querySelector('.remove-reajuste-btn');
+        if (removeBtn) {
+            if (index === 0) {
+                removeBtn.style.display = 'none';
+            } else {
+                removeBtn.style.display = 'inline-block';
+            }
+        }
+    });
+}
+
+// Ajuste inicial para esconder o botão de remover do primeiro reajuste
+document.addEventListener('DOMContentLoaded', function() {
+    const firstRemoveBtn = document.querySelector('#reajustesContainer .remove-reajuste-btn');
+    if (firstRemoveBtn) {
+        firstRemoveBtn.style.display = 'none';
+    }
+});
