@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Eventos para recalcular automaticamente
     document.getElementById('adicTempoServico').addEventListener('input', calcularSalario);
-    document.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-        chk.addEventListener('change', calcularSalario);
-    });
+    // Atualizar eventos para os selects dos descontos
+    document.getElementById('desconto1').addEventListener('change', calcularSalario);
+    document.getElementById('desconto2').addEventListener('change', calcularSalario);
+    document.getElementById('desconto3').addEventListener('change', calcularSalario);
+    document.getElementById('desconto4').addEventListener('change', calcularSalario);
 });
 
 function inicializarComboboxes() {
@@ -108,10 +110,13 @@ function calcularSalario() {
     let baseIR = vencimentoBase + adicTempoServico + adicQualificacaoCursos + adicQualificacaoTitulos + abonoProdColetiva - finanpreve;
     let impostoDeRenda = 0.275 * baseIR - 896.00;
     if (impostoDeRenda < 0) impostoDeRenda = 0;
-    const tceUnimed = document.getElementById('chkD070').checked ? 0.045 * (vencimentoBase + adicTempoServico + adicQualificacaoTitulos) : 0;
-    const sindicontas = document.getElementById('chkD303').checked ? 40.00 : 0;
-    const astcempMensalidade = document.getElementById('chkD019').checked ? 77.13 : 0;
-    const astcempUniodonto = document.getElementById('chkD042').checked ? 33.06 : 0;
+
+    // Atualizar cálculo dos descontos com base nos comboboxes
+    const tceUnimed = document.getElementById('desconto1').value === 'sim' ? 0.045 * (vencimentoBase + adicTempoServico + adicQualificacaoTitulos) : 0;
+    const sindicontas = document.getElementById('desconto2').value === 'sim' ? 40.00 : 0;
+    const astcempMensalidade = document.getElementById('desconto3').value === 'sim' ? 77.13 : 0;
+    const astcempUniodonto = document.getElementById('desconto4').value === 'sim' ? 33.06 : 0;
+
     const remuneracao = vencimentoBase + adicTempoServico + adicQualificacaoCursos + adicQualificacaoTitulos + abonoProdColetiva;
     const descontos = finanpreve + impostoDeRenda + tceUnimed + sindicontas + astcempMensalidade + astcempUniodonto;
     const liquidoAReceber = remuneracao - descontos;
