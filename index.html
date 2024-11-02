@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <!-- Metadados essenciais -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Contracheque</title>
-    <!-- Link do Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Link para o Bootstrap CSS atualizado -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Link para o Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,54 +19,54 @@
     <div class="container mt-5 mb-5">
         <h1 class="text-center mb-4">Simulador de Contracheque</h1>
         <!-- Seção para seleção de Cargo -->
-        <div class="form-group">
-            <label for="cargo">Cargo:</label>
-            <select id="cargo" class="form-control">
+        <div class="mb-3">
+            <label for="cargo" class="form-label">Cargo:</label>
+            <select id="cargo" class="form-select">
                 <option value="" selected disabled>Selecione um cargo</option>
             </select>
         </div>
         <!-- Linha para Classe e Referência lado a lado -->
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="classe">Classe:</label>
-                <select id="classe" class="form-control" disabled>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="classe" class="form-label">Classe:</label>
+                <select id="classe" class="form-select" disabled>
                     <option value="" selected disabled>Selecione a classe</option>
                 </select>
             </div>
-            <div class="form-group col-md-6">
-                <label for="referencia">Referência:</label>
-                <select id="referencia" class="form-control" disabled>
+            <div class="col-md-6 mb-3">
+                <label for="referencia" class="form-label">Referência:</label>
+                <select id="referencia" class="form-select" disabled>
                     <option value="" selected disabled>Selecione a referência</option>
                 </select>
             </div>
         </div>
 
         <!-- Linha para os descontos lado a lado -->
-        <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="desconto1">TCE-UNIMED BELÉM:</label>
-                <select id="desconto1" class="form-control">
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label for="desconto1" class="form-label">TCE-UNIMED BELÉM:</label>
+                <select id="desconto1" class="form-select">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
-            <div class="form-group col-md-3">
-                <label for="desconto2">SINDICONTAS-PA CONTRIBUIÇÃO:</label>
-                <select id="desconto2" class="form-control">
+            <div class="col-md-3 mb-3">
+                <label for="desconto2" class="form-label">SINDICONTAS-PA CONTRIBUIÇÃO:</label>
+                <select id="desconto2" class="form-select">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
-            <div class="form-group col-md-3">
-                <label for="desconto3">ASTCEMP-MENSALIDADE:</label>
-                <select id="desconto3" class="form-control">
+            <div class="col-md-3 mb-3">
+                <label for="desconto3" class="form-label">ASTCEMP-MENSALIDADE:</label>
+                <select id="desconto3" class="form-select">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
-            <div class="form-group col-md-3">
-                <label for="desconto4">ASTCEMP-UNIODONTO:</label>
-                <select id="desconto4" class="form-control">
+            <div class="col-md-3 mb-3">
+                <label for="desconto4" class="form-label">ASTCEMP-UNIODONTO:</label>
+                <select id="desconto4" class="form-select">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
@@ -75,7 +76,7 @@
         <!-- Tabela de salário -->
         <div class="table-responsive">
             <table id="salaryTable" class="table table-striped table-bordered mt-4">
-                <thead class="thead-dark">
+                <thead class="table-dark">
                     <tr>
                         <th>RUBRICA</th>
                         <th>DESCRIÇÃO</th>
@@ -92,7 +93,7 @@
                         <td>P031</td>
                         <td>
                             ADIC. TEMPO SERVIÇO
-                            (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" style="width: 70px;">%)
+                            (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block" style="width: 70px;">%)
                         </td>
                         <td id="valorP031">R$ 0,00</td>
                     </tr>
@@ -101,12 +102,29 @@
         </div>
     </div>
 
-    <!-- Link do Bootstrap JS e dependências -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <!-- Popper.js é necessário para alguns componentes do Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Modal para informar que o limite foi atingido -->
+    <div class="modal fade" id="limitModal" tabindex="-1" aria-labelledby="limitModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Cabeçalho do modal -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="limitModalLabel">Limite Atingido</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <!-- Corpo do modal -->
+          <div class="modal-body">
+            O ADIC. TEMPO SERVIÇO atingiu o limite máximo de 60%.
+          </div>
+          <!-- Rodapé do modal -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link do Bootstrap JS atualizado -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Seu arquivo JavaScript personalizado -->
     <script src="script.js"></script>
 </body>
