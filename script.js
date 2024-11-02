@@ -20,8 +20,16 @@ const cargoDisplayNames = {
     "Agente_de_Vigilancia_e_Zeladoria": "Agente de Vigilância e Zeladoria"
 };
 
+// Variável para controlar se o modal já foi exibido
+let modalShown = false;
+// Variável para armazenar a referência ao modal
+let limitModal;
+
 // Carregar dados do arquivo vencimentos.json
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializa o modal
+    limitModal = new bootstrap.Modal(document.getElementById('limitModal'));
+
     fetch('vencimentos.json')
         .then(response => response.json())
         .then(data => {
@@ -32,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Eventos para recalcular automaticamente
     document.getElementById('adicTempoServico').addEventListener('input', calcularSalario);
-    // Atualizar eventos para os selects dos descontos
     document.getElementById('desconto1').addEventListener('change', calcularSalario);
     document.getElementById('desconto2').addEventListener('change', calcularSalario);
     document.getElementById('desconto3').addEventListener('change', calcularSalario);
@@ -90,9 +97,15 @@ function calcularSalario() {
     if (adicTempoServicoPercentual > 0.60) {
         adicTempoServicoPercentual = 0.60;
         adicTempoServicoInput.value = 60;
-    } else if (adicTempoServicoPercentual < 0) {
-        adicTempoServicoPercentual = 0;
-        adicTempoServicoInput.value = 0;
+    }
+
+    // Verifica se o valor atingiu 60% e se o modal já não foi exibido
+    if (adicTempoServicoPercentual === 0.60 && !modalShown) {
+        modalShown = true;
+        limitModal.show();
+    } else if (adicTempoServicoPercentual < 0.60) {
+        // Reseta a variável se o valor for menor que 60%
+        modalShown = false;
     }
 
     if (cargoSelect.value && classeSelect.value && referenciaSelect.value) {
