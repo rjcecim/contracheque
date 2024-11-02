@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     // Eventos para recalcular automaticamente
-    document.getElementById('adicTempoServico').addEventListener('change', calcularSalario);
+    document.getElementById('adicTempoServico').addEventListener('input', calcularSalario);
     // Atualizar eventos para os selects dos descontos
     document.getElementById('desconto1').addEventListener('change', calcularSalario);
     document.getElementById('desconto2').addEventListener('change', calcularSalario);
@@ -83,8 +83,17 @@ function calcularSalario() {
     const cargoSelect = document.getElementById('cargo');
     const classeSelect = document.getElementById('classe');
     const referenciaSelect = document.getElementById('referencia');
-    const adicTempoServicoSelect = document.getElementById('adicTempoServico');
-    let adicTempoServicoPercentual = parseFloat(adicTempoServicoSelect.value) / 100;
+    const adicTempoServicoInput = document.getElementById('adicTempoServico');
+    let adicTempoServicoPercentual = parseFloat(adicTempoServicoInput.value) / 100;
+
+    // Limitar o valor máximo a 60% e mínimo a 0%
+    if (adicTempoServicoPercentual > 0.60) {
+        adicTempoServicoPercentual = 0.60;
+        adicTempoServicoInput.value = 60;
+    } else if (adicTempoServicoPercentual < 0) {
+        adicTempoServicoPercentual = 0;
+        adicTempoServicoInput.value = 0;
+    }
 
     if (cargoSelect.value && classeSelect.value && referenciaSelect.value) {
         vencimentoBase = parseFloat(vencimentosData[cargoSelect.value][classeSelect.value][referenciaSelect.value]);
