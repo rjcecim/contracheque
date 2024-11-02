@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('desconto3').addEventListener('change', calcularSalario);
     document.getElementById('desconto4').addEventListener('change', calcularSalario);
     document.getElementById('titulos').addEventListener('change', calcularSalario);
+    document.getElementById('cursos').addEventListener('change', calcularSalario);
 
     // Evento para adicionar novos campos de reajuste
     document.getElementById('addReajusteBtn').addEventListener('click', adicionarReajuste);
@@ -103,6 +104,7 @@ function calcularSalario() {
     const referenciaSelect = document.getElementById('referencia');
     const adicTempoServicoInput = document.getElementById('adicTempoServico');
     const titulosSelect = document.getElementById('titulos');
+    const cursosSelect = document.getElementById('cursos');
     let adicTempoServicoPercentual = parseFloat(adicTempoServicoInput.value) / 100;
 
     // Limitar o valor máximo a 60% e mínimo a 0%
@@ -140,7 +142,11 @@ function calcularSalario() {
 
     document.getElementById('vencimentoBase').textContent = formatarComoMoeda(vencimentoBase);
 
-    const adicQualificacaoCursos = 0.10 * vencimentoBase;
+    // Cálculo do adicional de cursos
+    let adicQualificacaoCursos = 0;
+    if (cursosSelect.value === 'sim') {
+        adicQualificacaoCursos = 0.10 * vencimentoBase;
+    }
 
     // Ajuste no cálculo do adicional de títulos conforme a seleção
     let percentualTitulo = 0;
@@ -185,7 +191,7 @@ function calcularSalario() {
     let aliquotaPercentual = (aliquota * 100).toFixed(1).replace('.', ',');
 
     atualizarTabela([
-        { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSO', valor: adicQualificacaoCursos },
+        { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSOS', valor: adicQualificacaoCursos },
         { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC./TÍTULOS', valor: adicQualificacaoTitulos },
         { rubrica: 'P331', descricao: 'ABONO PRODUTIVIDADE COLETIVA (100%)', valor: abonoProdColetiva },
         { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
