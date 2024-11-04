@@ -169,7 +169,7 @@ function calcularSalario() {
     }
     const adicQualificacaoTitulos = percentualTitulo * vencimentoBase;
 
-    const adicTempoServico = adicTempoServicoPercentual * (vencimentoBase + adicQualificacaoTitulos);
+    const adicTempoServico = adicTempoServicoPercentual * (vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos);
     document.getElementById('valorP031').textContent = formatarComoMoeda(adicTempoServico);
 
     let apcPercent = parseFloat(apcPercentInput.value);
