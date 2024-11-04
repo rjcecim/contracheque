@@ -1,0 +1,68 @@
+/* style.css */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-weight: 700;
+    color: #343a40;
+    margin-bottom: 30px;
+}
+
+.input-percent {
+    width: 70px !important;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table thead th {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .row .col-md-6,
+    .row .col-md-4,
+    .row .col-md-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .input-percent {
+        width: 100% !important;
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .row .col-md-3 label,
+    .row .col-md-4 label {
+        margin-top: 10px;
+    }
+}
+
+.add-reajuste-btn img,
+.remove-reajuste-btn img {
+    pointer-events: none;
+}
