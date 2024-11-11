@@ -1,5 +1,3 @@
-/* style.css */
-
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f8f9fa;
@@ -62,7 +60,7 @@ h1 {
     }
 }
 
-.add-reajuste-btn img,
-.remove-reajuste-btn img {
+.add-reajuste-btn i,
+.remove-reajuste-btn i {
     pointer-events: none;
 }

@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Contracheque</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -15,26 +14,26 @@
         <h1 class="text-center mb-4">Simulador de Contracheque</h1>
         <div class="mb-3">
             <label for="cargo" class="form-label">Cargo:</label>
-            <select id="cargo" class="form-select">
+            <select id="cargo" class="form-select" aria-label="Selecione o cargo">
                 <option value="" selected disabled>Selecione um cargo</option>
             </select>
         </div>
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="classe" class="form-label">Classe:</label>
-                <select id="classe" class="form-select" disabled>
+                <select id="classe" class="form-select" disabled aria-label="Selecione a classe">
                     <option value="" selected disabled>Selecione a classe</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="referencia" class="form-label">Referência:</label>
-                <select id="referencia" class="form-select" disabled>
+                <select id="referencia" class="form-select" disabled aria-label="Selecione a referência">
                     <option value="" selected disabled>Selecione a referência</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="titulos" class="form-label">Títulos:</label>
-                <select id="titulos" class="form-select">
+                <select id="titulos" class="form-select" aria-label="Selecione os títulos">
                     <option value="nenhum" selected>Nenhum</option>
                     <option value="especializacao">Especialização</option>
                     <option value="mestrado">Mestrado</option>
@@ -43,7 +42,7 @@
             </div>
             <div class="col-md-3 mb-3">
                 <label for="cursos" class="form-label">Cursos:</label>
-                <select id="cursos" class="form-select">
+                <select id="cursos" class="form-select" aria-label="Selecione se possui cursos">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
@@ -53,7 +52,7 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="funcaoGratificada" class="form-label">Função Gratificada:</label>
-                <select id="funcaoGratificada" class="form-select">
+                <select id="funcaoGratificada" class="form-select" aria-label="Selecione a função gratificada">
                     <option value="nenhum" selected>Nenhum</option>
                     <option value="gerente">Gerente</option>
                     <option value="coordenador">Coordenador</option>
@@ -61,49 +60,49 @@
             </div>
             <div class="col-md-3 mb-3">
                 <label for="ferias" class="form-label">Férias:</label>
-                <select id="ferias" class="form-select">
+                <select id="ferias" class="form-select" aria-label="Selecione se está em férias">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="abonoPermanencia" class="form-label">Abono Permanência:</label>
-                <select id="abonoPermanencia" class="form-select">
+                <select id="abonoPermanencia" class="form-select" aria-label="Selecione se possui abono permanência">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="numeroDependentes" class="form-label">Número de Dependentes:</label>
-                <input type="number" id="numeroDependentes" class="form-control" value="0" min="0" step="1">
+                <input type="number" id="numeroDependentes" class="form-control" value="0" min="0" step="1" aria-label="Número de dependentes">
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="desconto1" class="form-label">TCE-UNIMED BELÉM:</label>
-                <select id="desconto1" class="form-select">
+                <select id="desconto1" class="form-select" aria-label="Selecione se deseja desconto TCE-UNIMED BELÉM">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="desconto2" class="form-label">SINDICONTAS-PA CONTRIBUIÇÃO:</label>
-                <select id="desconto2" class="form-select">
+                <select id="desconto2" class="form-select" aria-label="Selecione se deseja desconto SINDICONTAS-PA CONTRIBUIÇÃO">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="desconto3" class="form-label">ASTCEMP-MENSALIDADE:</label>
-                <select id="desconto3" class="form-select">
+                <select id="desconto3" class="form-select" aria-label="Selecione se deseja desconto ASTCEMP-MENSALIDADE">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="desconto4" class="form-label">ASTCEMP-UNIODONTO:</label>
-                <select id="desconto4" class="form-select">
+                <select id="desconto4" class="form-select" aria-label="Selecione se deseja desconto ASTCEMP-UNIODONTO">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
                 </select>
@@ -115,10 +114,10 @@
             <div id="reajustesContainer">
                 <div class="input-group mb-2">
                     <span class="input-group-text">Qual o valor do 1º reajuste?</span>
-                    <input type="number" class="form-control reajuste-input" placeholder="0,00" step="0.01" min="0">
+                    <input type="number" class="form-control reajuste-input" placeholder="0,00" step="0.01" min="0" aria-label="Valor do reajuste">
                     <span class="input-group-text">%</span>
                     <button class="btn btn-outline-secondary add-reajuste-btn" type="button" id="addReajusteBtn">
-                        <img src="addition.svg" alt="Adicionar" width="20" height="20">
+                        <i class="bi bi-plus"></i>
                     </button>
                 </div>
             </div>
@@ -148,7 +147,7 @@
                         <td>P031</td>
                         <td>
                             ADIC. TEMPO SERVIÇO
-                            (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block input-percent" style="width: 70px;">%)
+                            (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block input-percent" style="width: 70px;" aria-label="Adicional de Tempo de Serviço">%)
                         </td>
                         <td id="valorP031">0,00</td>
                     </tr>
@@ -156,7 +155,7 @@
                         <td>P331</td>
                         <td>
                             ABONO PRODUTIVIDADE COLETIVA
-                            (<input type="number" id="apcPercent" value="100" step="1" min="0" max="100" class="form-control d-inline-block input-percent" style="width: 70px;">%)
+                            (<input type="number" id="apcPercent" value="100" step="0.01" min="0" max="100" class="form-control d-inline-block input-percent" style="width: 1000px;" aria-label="Percentual de Abono Produtividade">%)
                         </td>
                         <td id="valorP331">0,00</td>
                     </tr>

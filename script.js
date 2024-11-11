@@ -1,11 +1,8 @@
-// script.js
-
 function formatarComoMoeda(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 let vencimentosData = {};
-let vencimentoBase = 0;
 
 const cargoDisplayNames = {
     "Assessor_Tecnico_de_Controle_Externo_Auditor_de_Controle_Externo": "Assessor Técnico de Controle Externo / Auditor de Controle Externo",
@@ -102,6 +99,18 @@ function inicializarComboboxes() {
     });
 }
 
+function aplicarReajustes(valorOriginal) {
+    let valorReajustado = valorOriginal;
+    const reajusteInputs = document.querySelectorAll('.reajuste-input');
+    reajusteInputs.forEach(input => {
+        let percentual = parseFloat(input.value.replace(',', '.')) / 100;
+        if (!isNaN(percentual) && percentual !== 0) {
+            valorReajustado += valorReajustado * percentual;
+        }
+    });
+    return valorReajustado;
+}
+
 function calcularSalario() {
     const cargoSelect = document.getElementById('cargo');
     const classeSelect = document.getElementById('classe');
@@ -114,6 +123,10 @@ function calcularSalario() {
     const feriasSelect = document.getElementById('ferias');
     const abonoPermanenciaSelect = document.getElementById('abonoPermanencia');
     const numeroDependentesInput = document.getElementById('numeroDependentes');
+    const desconto1 = document.getElementById('desconto1').value === 'sim';
+    const desconto2 = document.getElementById('desconto2').value === 'sim';
+    const desconto3 = document.getElementById('desconto3').value === 'sim';
+    const desconto4 = document.getElementById('desconto4').value === 'sim';
 
     let adicTempoServicoPercentual = parseFloat(adicTempoServicoInput.value) / 100;
 
@@ -135,17 +148,8 @@ function calcularSalario() {
         vencimentoOriginal = parseFloat(vencimentosData[cargoSelect.value][classeSelect.value][referenciaSelect.value]);
     }
 
-    let vencimentoReajustado = vencimentoOriginal;
-    const reajusteInputs = document.querySelectorAll('.reajuste-input');
-    reajusteInputs.forEach(input => {
-        let percentual = parseFloat(input.value.replace(',', '.')) / 100;
-        if (!isNaN(percentual) && percentual > 0) {
-            vencimentoReajustado += vencimentoReajustado * percentual;
-        }
-    });
-
-    vencimentoBase = vencimentoReajustado;
-
+    let vencimentoReajustado = aplicarReajustes(vencimentoOriginal);
+    let vencimentoBase = vencimentoReajustado;
     document.getElementById('vencimentoBase').textContent = formatarComoMoeda(vencimentoBase);
 
     let adicQualificacaoCursos = 0;
@@ -175,10 +179,21 @@ function calcularSalario() {
     }
     document.getElementById('gratNivelSuperior').textContent = formatarComoMoeda(gratNivelSuperior);
 
-    const adicTempoServico = adicTempoServicoPercentual * (vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos);
-    document.getElementById('valorP031').textContent = formatarComoMoeda(adicTempoServico);
+    let P307 = 0;
+    if (funcaoGratificadaSelect.value === 'gerente' || funcaoGratificadaSelect.value === 'coordenador') {
+        const referenciaP307Original = vencimentosData["Assessor_Tecnico_de_Controle_Externo_Auditor_de_Controle_Externo"]["A"]["1"];
+        const referenciaP307 = aplicarReajustes(referenciaP307Original);
+        P307 = funcaoGratificadaSelect.value === 'gerente' ? 0.90 * referenciaP307 : 1.00 * referenciaP307;
+    }
 
-    let apcPercent = parseFloat(apcPercentInput.value);
+    // Cálculo do adicTempoServicoTotal para exibição
+    let adicTempoServicoTotal = adicTempoServicoPercentual * (vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos + P307);
+    document.getElementById('valorP031').textContent = formatarComoMoeda(adicTempoServicoTotal);
+
+    // Cálculo do adicTempoServicoParaBasePrevidencia sem o P307
+    let adicTempoServicoParaBasePrevidencia = adicTempoServicoPercentual * (vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos);
+
+    let apcPercent = parseFloat(apcPercentInput.value.replace(',', '.'));
     if (isNaN(apcPercent) || apcPercent < 0) {
         apcPercent = 0;
         apcPercentInput.value = 0;
@@ -191,10 +206,11 @@ function calcularSalario() {
     const abonoProdutiva = abonoBase * (apcPercent / 100);
     document.getElementById('valorP331').textContent = formatarComoMoeda(abonoProdutiva);
 
-    const basePrevidencia = vencimentoBase + gratNivelSuperior + adicTempoServico + adicQualificacaoTitulos;
+    // Base Previdência excluindo a parcela do adicTempoServico sobre P307
+    const basePrevidencia = vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos + adicTempoServicoParaBasePrevidencia;
     const finanpreve = 0.14 * basePrevidencia;
 
-    let baseIR = vencimentoBase + gratNivelSuperior + adicTempoServico + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva - finanpreve;
+    let baseIR = vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 - finanpreve;
 
     const numeroDependentes = parseInt(numeroDependentesInput.value);
     const deducaoDependentes = 189.59 * numeroDependentes;
@@ -202,37 +218,102 @@ function calcularSalario() {
 
     let { impostoDeRenda, aliquota } = calcularImpostoDeRenda(baseIR);
 
-    const tceUnimed = document.getElementById('desconto1').value === 'sim' ? 0.045 * (vencimentoBase + gratNivelSuperior + adicTempoServico + adicQualificacaoTitulos) : 0;
-    const sindicontas = document.getElementById('desconto2').value === 'sim' ? 40.00 : 0;
-    const astcempMensalidade = document.getElementById('desconto3').value === 'sim' ? 77.13 : 0;
-    const astcempUniodonto = document.getElementById('desconto4').value === 'sim' ? 33.06 : 0;
+    let p025 = 0;
+    let d055 = 0;
+    let aliquotaD055Percentual = '0,0';
 
-    const remuneracao = vencimentoBase + gratNivelSuperior + adicTempoServico + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva;
-    const descontos = finanpreve + impostoDeRenda + tceUnimed + sindicontas + astcempMensalidade + astcempUniodonto;
-    const liquidoAReceber = remuneracao - descontos;
+    if (feriasSelect.value === 'sim') {
+        p025 = (vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoCursos + adicQualificacaoTitulos + abonoProdutiva + P307) / 3;
+        let baseD055 = p025 - (189.59 * numeroDependentes);
+        let { impostoDeRenda: irD055, aliquota: aliD055 } = calcularImpostoDeRenda(baseD055);
+        d055 = irD055;
+        aliquotaD055Percentual = (aliD055 * 100).toFixed(1).replace('.', ',');
+    }
 
     let aliquotaPercentual = (aliquota * 100).toFixed(1).replace('.', ',');
 
-    atualizarTabela([
-        { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSOS', valor: adicQualificacaoCursos },
-        { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC./TÍTULOS', valor: adicQualificacaoTitulos },
-        { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
+    let valores = [
         { rubrica: 'D031', descricao: `IMPOSTO DE RENDA (${aliquotaPercentual}%)`, valor: impostoDeRenda },
-        { rubrica: 'D070', descricao: 'TCE-UNIMED BELÉM', valor: tceUnimed },
-        { rubrica: 'D303', descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO', valor: sindicontas },
-        { rubrica: 'D019', descricao: 'ASTCEMP-MENSALIDADE', valor: astcempMensalidade },
-        { rubrica: 'D042', descricao: 'ASTCEMP-UNIODONTO', valor: astcempUniodonto },
         { rubrica: 'R101', descricao: 'BASE I.R.', valor: baseIR },
         { rubrica: 'R102', descricao: 'BASE PREVIDÊNCIA', valor: basePrevidencia },
-        { rubrica: 'R103', descricao: 'REMUNERAÇÃO', valor: remuneracao },
-        { rubrica: 'R104', descricao: 'TOTAL DESCONTOS', valor: descontos },
-        { rubrica: 'R105', descricao: 'LÍQUIDO A RECEBER', valor: liquidoAReceber },
-    ]);
+        { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
+        { rubrica: 'R103', descricao: 'REMUNERAÇÃO', valor: vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0) },
+        { rubrica: 'R104', descricao: 'TOTAL DESCONTOS', valor: finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 70.05 : 0) + (desconto4 ? 66.09 : 0) + d055 },
+        { rubrica: 'R105', descricao: 'LÍQUIDO A RECEBER', valor: (vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0)) - (finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 70.05 : 0) + (desconto4 ? 66.09 : 0) + d055) }
+    ];
+
+    if (feriasSelect.value === 'sim') {
+        valores.push(
+            { rubrica: 'P025', descricao: '1/3 FÉRIAS (30 DIAS)', valor: p025 },
+            { rubrica: 'D055', descricao: `IRRF - 1/3 FÉRIAS (30 DIAS) (${aliquotaD055Percentual}%)`, valor: d055 }
+        );
+    }
+
+    if (cursosSelect.value === 'sim') {
+        valores.push(
+            { rubrica: 'P316', descricao: 'ADICIONAL QUALIFIC./CURSOS', valor: adicQualificacaoCursos }
+        );
+    }
+
+    if (titulosSelect.value !== 'nenhum') {
+        valores.push(
+            { rubrica: 'P317', descricao: 'ADICIONAL QUALIFIC./TÍTULOS', valor: adicQualificacaoTitulos }
+        );
+    }
+
+    if (funcaoGratificadaSelect.value === 'gerente' || funcaoGratificadaSelect.value === 'coordenador') {
+        valores.push(
+            { rubrica: 'P307', descricao: 'REPRESENTAÇÃO - FUNC. GRAT.', valor: P307 }
+        );
+    }
+
+    if (desconto1) {
+        // Corrigido para usar basePrevidencia em vez de adicTempoServicoTotal
+        valores.push(
+            { rubrica: 'D070', descricao: 'TCE-UNIMED BELÉM', valor: 0.045 * basePrevidencia }
+        );
+    }
+
+    if (desconto2) {
+        valores.push(
+            { rubrica: 'D303', descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO', valor: 40.00 }
+        );
+    }
+
+    if (desconto3) {
+        // Atualizado para usar o valor correto de D019
+        valores.push(
+            { rubrica: 'D019', descricao: 'ASTCEMP-MENSALIDADE', valor: 77.13 }
+        );
+    }
+
+    if (desconto4) {
+        // Atualizado para usar o valor correto de D042
+        valores.push(
+            { rubrica: 'D042', descricao: 'ASTCEMP-UNIODONTO', valor: 33.06 }
+        );
+    }
+
+    valores = valores.filter((item, index, self) =>
+        index === self.findIndex((t) => (
+            t.rubrica === item.rubrica
+        ))
+    );
+
+    valores.sort((a, b) => {
+        if (a.rubrica.startsWith('P') && !b.rubrica.startsWith('P')) return -1;
+        if (b.rubrica.startsWith('P') && !a.rubrica.startsWith('P')) return 1;
+        if (a.rubrica.startsWith('D') && !b.rubrica.startsWith('D')) return -1;
+        if (b.rubrica.startsWith('D') && !a.rubrica.startsWith('D')) return 1;
+        return 0;
+    });
+
+    atualizarTabela(valores);
 }
 
 function atualizarTabela(valores) {
     const salaryTable = document.getElementById('salaryTable').getElementsByTagName('tbody')[0];
-    while (salaryTable.rows.length > 4) {
+    while (salaryTable.rows.length > 4) { // Mantém apenas as linhas fixas
         salaryTable.deleteRow(4);
     }
     valores.forEach(item => {
@@ -289,6 +370,7 @@ function adicionarReajuste() {
     input.placeholder = '0,00';
     input.step = '0.01';
     input.min = '0';
+    input.setAttribute('aria-label', `Valor do ${numeroReajustes}º reajuste`);
 
     const spanPercent = document.createElement('span');
     spanPercent.classList.add('input-group-text');
@@ -297,7 +379,7 @@ function adicionarReajuste() {
     const removeBtn = document.createElement('button');
     removeBtn.classList.add('btn', 'btn-outline-secondary', 'remove-reajuste-btn');
     removeBtn.type = 'button';
-    removeBtn.innerHTML = '<img src="subtraction.svg" alt="Remover" width="20" height="20">';
+    removeBtn.innerHTML = '<i class="bi bi-dash"></i>';
 
     removeBtn.addEventListener('click', function() {
         reajustesContainer.removeChild(div);
