@@ -240,8 +240,8 @@ function calcularSalario() {
         { rubrica: 'R102', descricao: 'BASE PREVIDÊNCIA', valor: basePrevidencia },
         { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
         { rubrica: 'R103', descricao: 'REMUNERAÇÃO', valor: vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0) },
-        { rubrica: 'R104', descricao: 'TOTAL DESCONTOS', valor: finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 70.05 : 0) + (desconto4 ? 66.09 : 0) + d055 },
-        { rubrica: 'R105', descricao: 'LÍQUIDO A RECEBER', valor: (vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0)) - (finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 70.05 : 0) + (desconto4 ? 66.09 : 0) + d055) }
+        { rubrica: 'R104', descricao: 'TOTAL DESCONTOS', valor: finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 77.13 : 0) + (desconto4 ? 33.06 : 0) + d055 },
+        { rubrica: 'R105', descricao: 'LÍQUIDO A RECEBER', valor: (vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0)) - (finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 77.13 : 0) + (desconto4 ? 33.06 : 0) + d055) }
     ];
 
     if (feriasSelect.value === 'sim') {
