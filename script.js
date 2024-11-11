@@ -3,6 +3,8 @@ function formatarComoMoeda(valor) {
 }
 
 let vencimentosData = {};
+let tabelaIR = [];
+let deducaoPorDependente = 0;
 
 const cargoDisplayNames = {
     "Assessor_Tecnico_de_Controle_Externo_Auditor_de_Controle_Externo": "Assessor Técnico de Controle Externo / Auditor de Controle Externo",
@@ -25,13 +27,16 @@ let limitModal;
 document.addEventListener('DOMContentLoaded', function() {
     limitModal = new bootstrap.Modal(document.getElementById('limitModal'));
 
-    fetch('vencimentos.json')
-        .then(response => response.json())
-        .then(data => {
-            vencimentosData = data;
-            inicializarComboboxes();
-            calcularSalario();
-        });
+    Promise.all([
+        fetch('vencimentos.json').then(response => response.json()),
+        fetch('tabela_ir.json').then(response => response.json())
+    ]).then(([vencimentos, irData]) => {
+        vencimentosData = vencimentos;
+        tabelaIR = irData.tabela_ir;
+        deducaoPorDependente = irData.deducao_por_dependente;
+        inicializarComboboxes();
+        calcularSalario();
+    });
 
     document.getElementById('adicTempoServico').addEventListener('input', calcularSalario);
     document.getElementById('desconto1').addEventListener('change', calcularSalario);
@@ -186,11 +191,9 @@ function calcularSalario() {
         P307 = funcaoGratificadaSelect.value === 'gerente' ? 0.90 * referenciaP307 : 1.00 * referenciaP307;
     }
 
-    // Cálculo do adicTempoServicoTotal para exibição
     let adicTempoServicoTotal = adicTempoServicoPercentual * (vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos + P307);
     document.getElementById('valorP031').textContent = formatarComoMoeda(adicTempoServicoTotal);
 
-    // Cálculo do adicTempoServicoParaBasePrevidencia sem o P307
     let adicTempoServicoParaBasePrevidencia = adicTempoServicoPercentual * (vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos);
 
     let apcPercent = parseFloat(apcPercentInput.value.replace(',', '.'));
@@ -206,14 +209,13 @@ function calcularSalario() {
     const abonoProdutiva = abonoBase * (apcPercent / 100);
     document.getElementById('valorP331').textContent = formatarComoMoeda(abonoProdutiva);
 
-    // Base Previdência excluindo a parcela do adicTempoServico sobre P307
     const basePrevidencia = vencimentoBase + gratNivelSuperior + adicQualificacaoTitulos + adicTempoServicoParaBasePrevidencia;
     const finanpreve = 0.14 * basePrevidencia;
 
     let baseIR = vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 - finanpreve;
 
     const numeroDependentes = parseInt(numeroDependentesInput.value);
-    const deducaoDependentes = 189.59 * numeroDependentes;
+    const deducaoDependentes = deducaoPorDependente * numeroDependentes;
     baseIR -= deducaoDependentes;
 
     let { impostoDeRenda, aliquota } = calcularImpostoDeRenda(baseIR);
@@ -224,7 +226,7 @@ function calcularSalario() {
 
     if (feriasSelect.value === 'sim') {
         p025 = (vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoCursos + adicQualificacaoTitulos + abonoProdutiva + P307) / 3;
-        let baseD055 = p025 - (189.59 * numeroDependentes);
+        let baseD055 = p025 - (deducaoPorDependente * numeroDependentes);
         let { impostoDeRenda: irD055, aliquota: aliD055 } = calcularImpostoDeRenda(baseD055);
         d055 = irD055;
         aliquotaD055Percentual = (aliD055 * 100).toFixed(1).replace('.', ',');
@@ -268,7 +270,6 @@ function calcularSalario() {
     }
 
     if (desconto1) {
-        // Corrigido para usar basePrevidencia em vez de adicTempoServicoTotal
         valores.push(
             { rubrica: 'D070', descricao: 'TCE-UNIMED BELÉM', valor: 0.045 * basePrevidencia }
         );
@@ -281,14 +282,12 @@ function calcularSalario() {
     }
 
     if (desconto3) {
-        // Atualizado para usar o valor correto de D019
         valores.push(
             { rubrica: 'D019', descricao: 'ASTCEMP-MENSALIDADE', valor: 77.13 }
         );
     }
 
     if (desconto4) {
-        // Atualizado para usar o valor correto de D042
         valores.push(
             { rubrica: 'D042', descricao: 'ASTCEMP-UNIODONTO', valor: 33.06 }
         );
@@ -313,7 +312,7 @@ function calcularSalario() {
 
 function atualizarTabela(valores) {
     const salaryTable = document.getElementById('salaryTable').getElementsByTagName('tbody')[0];
-    while (salaryTable.rows.length > 4) { // Mantém apenas as linhas fixas
+    while (salaryTable.rows.length > 4) {
         salaryTable.deleteRow(4);
     }
     valores.forEach(item => {
@@ -328,23 +327,18 @@ function atualizarTabela(valores) {
 }
 
 function calcularImpostoDeRenda(baseIR) {
-    let aliquota, deducao;
+    let aliquota = 0;
+    let deducao = 0;
 
-    if (baseIR <= 2259.20) {
-        aliquota = 0;
-        deducao = 0;
-    } else if (baseIR <= 2826.65) {
-        aliquota = 0.075;
-        deducao = 169.44;
-    } else if (baseIR <= 3751.05) {
-        aliquota = 0.15;
-        deducao = 381.44;
-    } else if (baseIR <= 4664.68) {
-        aliquota = 0.225;
-        deducao = 662.77;
-    } else {
-        aliquota = 0.275;
-        deducao = 896.00;
+    for (let faixa of tabelaIR) {
+        if (faixa.limite && baseIR <= faixa.limite) {
+            aliquota = faixa.aliquota;
+            deducao = faixa.deducao;
+            break;
+        } else if (!faixa.limite) {
+            aliquota = faixa.aliquota;
+            deducao = faixa.deducao;
+        }
     }
 
     let impostoDeRenda = (baseIR * aliquota) - deducao;
