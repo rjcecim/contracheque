@@ -284,7 +284,7 @@ function calcularSalario() {
         apcPercentInput.value = 100;
     }
 
-    const abonoBase = 0.70 * vencimentoBase;
+    const abonoBase = 0.90 * vencimentoBase;
     const abonoProdutiva = abonoBase * (apcPercent / 100);
     document.getElementById('valorP331').textContent = formatarComoMoeda(abonoProdutiva);
 
