@@ -5,6 +5,7 @@ function formatarComoMoeda(valor) {
 let vencimentosData = {};
 let tabelaIR = [];
 let deducaoPorDependente = 0;
+let contribSindicalTipos = [];
 
 const cargoDisplayNames = {
     "Assessor_Tecnico_de_Controle_Externo_Auditor_de_Controle_Externo": "Assessor Técnico de Controle Externo / Auditor de Controle Externo",
@@ -23,9 +24,11 @@ const cargosElegiveisGratNivelSuperior = [
 
 let modalShown = false;
 let limitModal;
+let contribSindicalModal;
 
 document.addEventListener('DOMContentLoaded', function() {
     limitModal = new bootstrap.Modal(document.getElementById('limitModal'));
+    contribSindicalModal = new bootstrap.Modal(document.getElementById('contribSindicalModal'));
 
     Promise.all([
         fetch('vencimentos.json').then(response => response.json()),
@@ -40,9 +43,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('adicTempoServico').addEventListener('input', calcularSalario);
     document.getElementById('desconto1').addEventListener('change', calcularSalario);
-    document.getElementById('desconto2').addEventListener('change', calcularSalario);
+    document.getElementById('desconto2').addEventListener('change', function() {
+        if (this.value === 'sim') {
+            contribSindicalModal.show();
+        } else {
+            removerRubrica('D303');
+            removerRubrica('D351');
+            contribSindicalTipos = [];
+            calcularSalario();
+        }
+    });
     document.getElementById('desconto3').addEventListener('change', calcularSalario);
-    document.getElementById('desconto4').addEventListener('change', calcularSalario);
+    document.getElementById('desconto4').addEventListener('change', toggleBeneficiarios);
     document.getElementById('titulos').addEventListener('change', calcularSalario);
     document.getElementById('cursos').addEventListener('change', calcularSalario);
     document.getElementById('apcPercent').addEventListener('input', calcularSalario);
@@ -59,10 +71,54 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const firstRemoveBtn = document.querySelector('#reajustesContainer .remove-reajuste-btn');
-    if (firstRemoveBtn) {
-        firstRemoveBtn.style.display = 'none';
-    }
+    document.getElementById('printButton').addEventListener('click', function() {
+        imprimirFolhaPagamento();
+    });
+
+    document.getElementById('contribSindicalModal').addEventListener('shown.bs.modal', function () {
+        const contribs = document.querySelectorAll('input[name="contribSindical"]');
+        contribs.forEach(contrib => contrib.checked = false);
+    });
+
+    document.getElementById('confirmContribSindical').addEventListener('click', function() {
+        contribSindicalTipos = [];
+        const contribs = document.querySelectorAll('input[name="contribSindical"]:checked');
+        contribs.forEach(contrib => {
+            contribSindicalTipos.push(contrib.value);
+        });
+
+        if (contribSindicalTipos.length === 0) {
+            document.getElementById('desconto2').value = 'nao';
+            removerRubrica('D303');
+            removerRubrica('D351');
+            calcularSalario();
+            return;
+        }
+
+        if (contribSindicalTipos.includes('SINDICONTAS-PA')) {
+            adicionarRubrica({
+                rubrica: 'D303',
+                descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO',
+                valor: 40.00
+            });
+        }
+
+        if (contribSindicalTipos.includes('AUD-TCE/PA')) {
+            const vencimentoBase = parseFloat(document.getElementById('vencimentoBase').textContent.replace(',', '.').replace('R$', '')) || 0;
+            const gratNivelSuperior = parseFloat(document.getElementById('gratNivelSuperior').textContent.replace(',', '.').replace('R$', '')) || 0;
+            const valorD351 = 0.008 * (vencimentoBase + gratNivelSuperior);
+            adicionarRubrica({
+                rubrica: 'D351',
+                descricao: 'AUD-TCE/PA',
+                valor: valorD351
+            });
+        }
+
+        calcularSalario();
+    });
+
+    window.addEventListener('beforeprint', substituirInputsPorTextos);
+    window.addEventListener('afterprint', restaurarInputs);
 });
 
 function inicializarComboboxes() {
@@ -116,6 +172,28 @@ function aplicarReajustes(valorOriginal) {
     return valorReajustado;
 }
 
+function toggleBeneficiarios() {
+    const desconto4Select = document.getElementById('desconto4');
+    const rowD042 = document.getElementById('rowD042');
+
+    if (desconto4Select.value === 'sim') {
+        rowD042.style.display = '';
+        const inputBeneficiarios = document.getElementById('numeroBeneficiarios');
+        inputBeneficiarios.addEventListener('input', calcularSalario);
+    } else {
+        rowD042.style.display = 'none';
+    }
+    calcularSalario();
+}
+
+let valores = [
+    { rubrica: 'P001', descricao: 'VENCIMENTO', valor: 0 },
+    { rubrica: 'P002', descricao: 'GRAT. NÍVEL SUPERIOR', valor: 0 },
+    { rubrica: 'P031', descricao: 'ADIC. TEMPO SERVIÇO (0%)', valor: 0 },
+    { rubrica: 'P331', descricao: 'ABONO PRODUTIVIDADE COLETIVA (100%)', valor: 0 },
+    { rubrica: 'D042', descricao: 'ASTCEMP-UNIODONTO | BENEFICIÁRIOS (0)', valor: 0 }
+];
+
 function calcularSalario() {
     const cargoSelect = document.getElementById('cargo');
     const classeSelect = document.getElementById('classe');
@@ -131,7 +209,8 @@ function calcularSalario() {
     const desconto1 = document.getElementById('desconto1').value === 'sim';
     const desconto2 = document.getElementById('desconto2').value === 'sim';
     const desconto3 = document.getElementById('desconto3').value === 'sim';
-    const desconto4 = document.getElementById('desconto4').value === 'sim';
+    const desconto4Select = document.getElementById('desconto4');
+    const desconto4 = desconto4Select.value === 'sim';
 
     let adicTempoServicoPercentual = parseFloat(adicTempoServicoInput.value) / 100;
 
@@ -234,14 +313,12 @@ function calcularSalario() {
 
     let aliquotaPercentual = (aliquota * 100).toFixed(1).replace('.', ',');
 
-    let valores = [
+    valores = [
         { rubrica: 'D031', descricao: `IMPOSTO DE RENDA (${aliquotaPercentual}%)`, valor: impostoDeRenda },
         { rubrica: 'R101', descricao: 'BASE I.R.', valor: baseIR },
         { rubrica: 'R102', descricao: 'BASE PREVIDÊNCIA', valor: basePrevidencia },
         { rubrica: 'D026', descricao: 'FINANPREV - LEI COMP Nº112 12/16 (14%)', valor: finanpreve },
-        { rubrica: 'R103', descricao: 'REMUNERAÇÃO', valor: vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0) },
-        { rubrica: 'R104', descricao: 'TOTAL DESCONTOS', valor: finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 77.13 : 0) + (desconto4 ? 33.06 : 0) + d055 },
-        { rubrica: 'R105', descricao: 'LÍQUIDO A RECEBER', valor: (vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + (feriasSelect.value === 'sim' ? p025 : 0)) - (finanpreve + impostoDeRenda + (desconto1 ? 0.045 * basePrevidencia : 0) + (desconto2 ? 40.00 : 0) + (desconto3 ? 77.13 : 0) + (desconto4 ? 33.06 : 0) + d055) }
+        { rubrica: 'R103', descricao: 'REMUNERAÇÃO', valor: vencimentoBase + gratNivelSuperior + adicTempoServicoTotal + adicQualificacaoTitulos + adicQualificacaoCursos + abonoProdutiva + P307 + p025 }
     ];
 
     if (feriasSelect.value === 'sim') {
@@ -275,10 +352,23 @@ function calcularSalario() {
         );
     }
 
-    if (desconto2) {
-        valores.push(
-            { rubrica: 'D303', descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO', valor: 40.00 }
-        );
+    if (desconto2 && contribSindicalTipos.length > 0) {
+        contribSindicalTipos.forEach(tipo => {
+            if (tipo === 'SINDICONTAS-PA') {
+                valores.push({
+                    rubrica: 'D303',
+                    descricao: 'SINDICONTAS-PA CONTRIBUIÇÃO',
+                    valor: 40.00
+                });
+            } else if (tipo === 'AUD-TCE/PA') {
+                const valorD351 = 0.008 * (vencimentoBase + gratNivelSuperior);
+                valores.push({
+                    rubrica: 'D351',
+                    descricao: 'AUD-TCE/PA',
+                    valor: valorD351
+                });
+            }
+        });
     }
 
     if (desconto3) {
@@ -288,42 +378,61 @@ function calcularSalario() {
     }
 
     if (desconto4) {
-        valores.push(
-            { rubrica: 'D042', descricao: 'ASTCEMP-UNIODONTO', valor: 33.06 }
-        );
+        const beneficiariosInput = document.getElementById('numeroBeneficiarios');
+        const numeroBeneficiarios = parseInt(beneficiariosInput.value) || 0;
+        const valorD042 = 33.06 * numeroBeneficiarios;
+        document.getElementById('valorD042').textContent = formatarComoMoeda(valorD042);
+        valores.push({
+            rubrica: 'D042',
+            descricao: `ASTCEMP-UNIODONTO | BENEFICIÁRIOS (${numeroBeneficiarios})`,
+            valor: valorD042
+        });
+    } else {
+        document.getElementById('valorD042').textContent = '0,00';
     }
-
-    valores = valores.filter((item, index, self) =>
-        index === self.findIndex((t) => (
-            t.rubrica === item.rubrica
-        ))
-    );
-
-    valores.sort((a, b) => {
-        if (a.rubrica.startsWith('P') && !b.rubrica.startsWith('P')) return -1;
-        if (b.rubrica.startsWith('P') && !a.rubrica.startsWith('P')) return 1;
-        if (a.rubrica.startsWith('D') && !b.rubrica.startsWith('D')) return -1;
-        if (b.rubrica.startsWith('D') && !a.rubrica.startsWith('D')) return 1;
-        return 0;
-    });
 
     atualizarTabela(valores);
 }
 
 function atualizarTabela(valores) {
     const salaryTable = document.getElementById('salaryTable').getElementsByTagName('tbody')[0];
-    while (salaryTable.rows.length > 4) {
-        salaryTable.deleteRow(4);
+    while (salaryTable.rows.length > 5) {
+        salaryTable.deleteRow(5);
     }
+
+    const ordemRubricas = [
+        'P001', 'P002', 'P307', 'P031', 'P025', 'P316', 'P317', 'P331',
+        'D026', 'D019', 'D031', 'D042', 'D055', 'D070', 'D303', 'D351',
+        'R101', 'R102', 'R103', 'R104', 'R105'
+    ];
+
+    valores.sort((a, b) => ordemRubricas.indexOf(a.rubrica) - ordemRubricas.indexOf(b.rubrica));
+
     valores.forEach(item => {
-        const row = salaryTable.insertRow();
-        const cellRubrica = row.insertCell(0);
-        const cellDescricao = row.insertCell(1);
-        const cellValor = row.insertCell(2);
-        cellRubrica.textContent = item.rubrica;
-        cellDescricao.textContent = item.descricao;
-        cellValor.textContent = formatarComoMoeda(item.valor);
+        if (item.rubrica !== 'D042') {
+            const row = salaryTable.insertRow();
+            const cellRubrica = row.insertCell(0);
+            const cellDescricao = row.insertCell(1);
+            const cellValor = row.insertCell(2);
+            cellRubrica.textContent = item.rubrica;
+            cellDescricao.textContent = item.descricao;
+            cellValor.textContent = formatarComoMoeda(item.valor);
+        }
     });
+
+    const totalDescontos = valores.filter(item => item.rubrica.startsWith('D')).reduce((acc, item) => acc + item.valor, 0);
+    const remuneracao = valores.find(item => item.rubrica === 'R103').valor;
+    const liquidoReceber = remuneracao - totalDescontos;
+
+    const rowTotalDescontos = salaryTable.insertRow();
+    rowTotalDescontos.insertCell(0).textContent = 'R104';
+    rowTotalDescontos.insertCell(1).textContent = 'TOTAL DESCONTOS';
+    rowTotalDescontos.insertCell(2).textContent = formatarComoMoeda(totalDescontos);
+
+    const rowLiquidoReceber = salaryTable.insertRow();
+    rowLiquidoReceber.insertCell(0).textContent = 'R105';
+    rowLiquidoReceber.insertCell(1).textContent = 'LÍQUIDO A RECEBER';
+    rowLiquidoReceber.insertCell(2).textContent = formatarComoMoeda(liquidoReceber);
 }
 
 function calcularImpostoDeRenda(baseIR) {
@@ -387,6 +496,7 @@ function adicionarReajuste() {
     div.appendChild(removeBtn);
 
     reajustesContainer.appendChild(div);
+    calcularSalario();
 }
 
 function recalcularNumeroReajustes() {
@@ -404,4 +514,65 @@ function recalcularNumeroReajustes() {
             }
         }
     });
+}
+
+function substituirInputsPorTextos() {
+    const p031Input = document.getElementById('adicTempoServico');
+    const p331Input = document.getElementById('apcPercent');
+    const beneficiariosInput = document.getElementById('numeroBeneficiarios');
+
+    if (p031Input && p331Input) {
+        const p031Cell = p031Input.parentElement;
+        const p331Cell = p331Input.parentElement;
+
+        p031Cell.dataset.originalContent = p031Cell.innerHTML;
+        p331Cell.dataset.originalContent = p331Cell.innerHTML;
+
+        const p031Value = p031Input.value;
+        const p331Value = p331Input.value;
+
+        p031Cell.innerHTML = `ADIC. TEMPO SERVIÇO (${p031Value}%)`;
+        p331Cell.innerHTML = `ABONO PRODUTIVIDADE COLETIVA (${p331Value}%)`;
+    }
+
+    if (beneficiariosInput) {
+        const beneficiariosCell = beneficiariosInput.parentElement;
+        beneficiariosCell.dataset.originalContent = beneficiariosCell.innerHTML;
+        const beneficiariosValue = beneficiariosInput.value;
+        beneficiariosCell.innerHTML = `ASTCEMP-UNIODONTO | BENEFICIÁRIOS (${beneficiariosValue})`;
+    }
+}
+
+function restaurarInputs() {
+    const p031Cell = document.getElementById('valorP031').parentElement.previousElementSibling;
+    const p331Cell = document.getElementById('valorP331').parentElement.previousElementSibling;
+    const beneficiariosCell = document.getElementById('valorD042').parentElement.previousElementSibling;
+
+    if (p031Cell.dataset.originalContent) {
+        p031Cell.innerHTML = p031Cell.dataset.originalContent;
+        delete p031Cell.dataset.originalContent;
+    }
+
+    if (p331Cell.dataset.originalContent) {
+        p331Cell.innerHTML = p331Cell.dataset.originalContent;
+        delete p331Cell.dataset.originalContent;
+    }
+
+    if (beneficiariosCell && beneficiariosCell.dataset.originalContent) {
+        beneficiariosCell.innerHTML = beneficiariosCell.dataset.originalContent;
+        delete beneficiariosCell.dataset.originalContent;
+    }
+}
+
+function imprimirFolhaPagamento() {
+    window.print();
+}
+
+function adicionarRubrica(novaRubrica) {
+    removerRubrica(novaRubrica.rubrica);
+    valores.push(novaRubrica);
+}
+
+function removerRubrica(rubrica) {
+    valores = valores.filter(item => item.rubrica !== rubrica);
 }

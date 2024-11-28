@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Contracheque</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -87,7 +87,7 @@
                 </select>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="desconto2" class="form-label">SINDICONTAS-PA CONTRIBUIÇÃO:</label>
+                <label for="desconto2" class="form-label">CONTRIBUIÇÃO SINDICAL:</label>
                 <select id="desconto2" class="form-select" aria-label="Selecione se deseja desconto SINDICONTAS-PA CONTRIBUIÇÃO">
                     <option value="nao" selected>Não</option>
                     <option value="sim">Sim</option>
@@ -123,6 +123,7 @@
             </div>
         </div>
 
+        <h2 id="printTitle" class="d-none d-print-block">Folha de Pagamento</h2>
         <div class="table-responsive">
             <table id="salaryTable" class="table table-striped table-bordered mt-4">
                 <thead class="table-dark">
@@ -145,22 +146,36 @@
                     </tr>
                     <tr>
                         <td>P031</td>
-                        <td>
-                            ADIC. TEMPO SERVIÇO
-                            (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block input-percent" style="width: 70px;" aria-label="Adicional de Tempo de Serviço">%)
+                        <td class="no-wrap">
+                            ADIC. TEMPO SERVIÇO (
+                            <input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block input-percent" aria-label="Adicional de Tempo de Serviço">%)
                         </td>
                         <td id="valorP031">0,00</td>
                     </tr>
                     <tr>
                         <td>P331</td>
-                        <td>
-                            ABONO PRODUTIVIDADE COLETIVA
-                            (<input type="number" id="apcPercent" value="100" step="0.01" min="0" max="100" class="form-control d-inline-block input-percent" style="width: 90px;" aria-label="Percentual de Abono Produtividade">%)
+                        <td class="no-wrap">
+                            ABONO PRODUTIVIDADE COLETIVA (
+                            <input type="number" id="apcPercent" value="100" step="0.01" min="0" max="100" class="form-control d-inline-block input-percent" aria-label="Percentual de Abono Produtividade">%)
                         </td>
                         <td id="valorP331">0,00</td>
                     </tr>
+                    <tr id="rowD042" style="display: none;">
+                        <td>D042</td>
+                        <td class="no-wrap">
+                            ASTCEMP-UNIODONTO | BENEFICIÁRIOS (
+                            <input type="number" id="numeroBeneficiarios" value="0" step="1" min="0" class="form-control d-inline-block input-percent" aria-label="Número de beneficiários">)
+                        </td>
+                        <td id="valorD042">0,00</td>
+                    </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <button id="printButton" class="btn btn-success">
+                <i class="bi bi-printer"></i> Imprimir Folha de Pagamento
+            </button>
         </div>
     </div>
 
@@ -176,6 +191,33 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Contribuições Sindicais -->
+    <div class="modal fade" id="contribSindicalModal" tabindex="-1" aria-labelledby="contribSindicalModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="contribSindicalModalLabel">Escolha a(s) Contribuição(ões) Sindical(is)</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="contribSindical" id="sindicontasPA" value="SINDICONTAS-PA">
+                <label class="form-check-label" for="sindicontasPA">SINDICONTAS-PA</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="contribSindical" id="audTCEPA" value="AUD-TCE/PA">
+                <label class="form-check-label" for="audTCEPA">AUD-TCE/PA</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="confirmContribSindical" data-bs-dismiss="modal">Confirmar</button>
           </div>
         </div>
       </div>
