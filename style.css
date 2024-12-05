@@ -1,130 +1,358 @@
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #fff;
+/* Definição de variáveis CSS para facilitar a manutenção e consistência do tema */
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #858796;
+    --background-color: #f8f9fc;
+    --container-bg: #ffffff;
+    --section-bg: #ffffff;
+    --input-border: #d1d3e2;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --error-color: #dc3545;
+    --success-color: #28a745;
+    --transition-speed: 0.3s;
+    --font-primary: 'Roboto', sans-serif;
+    --font-secondary: 'Montserrat', sans-serif;
+    --gradient-start: #4e73df;
+    --gradient-end: #224abe;
+    --discount-icon-color: #dc3545;
+    --provento-icon-color: #28a745;
+}
+
+/* Reset de margens e preenchimentos e definição do box-sizing */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+/* Estilo geral do corpo */
+body {
+    font-family: var(--font-primary);
+    background-color: var(--background-color);
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out; /* Animação de entrada suave */
+}
+
+/* Estilo do container principal */
 .container {
-    background-color: #fff;
+    background-color: var(--container-bg);
     padding: 30px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px var(--shadow-color);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
 }
 
+/* Efeito hover no container para elevação */
+.container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px var(--shadow-color);
+}
+
+/* Estilo do título principal */
 h1 {
-    font-weight: 700;
-    color: #343a40;
-    margin-bottom: 30px;
+    font-family: var(--font-secondary);
+    font-size: 2rem;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background 0.5s ease;
 }
 
-.input-percent {
-    width: 90px !important;
-    margin-left: 5px;
+/* Estilo das labels dos formulários */
+label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: var(--secondary-color);
+    font-size: 1rem;
+    font-family: var(--font-secondary);
+    transition: color var(--transition-speed);
+}
+
+/* Estilo dos ícones dentro das labels */
+label i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+/* Estilo de inputs e selects */
+input, select {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+    border: 1px solid var(--input-border);
+    font-size: 1rem;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+    font-family: var(--font-primary);
+}
+
+/* Estilo ao focar em inputs e selects */
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+    outline: none;
+}
+
+/* Estilo para inputs inválidos */
+.is-invalid {
+    border-color: var(--error-color);
+    box-shadow: 0 0 5px var(--error-color);
+}
+
+/* Mensagens de erro */
+.error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: -8px;
+    margin-bottom: 12px;
+}
+
+/* Botões personalizados com gradiente */
+.btn-custom {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: var(--font-secondary);
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+/* Efeito hover nos botões personalizados */
+.btn-custom:hover {
+    background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+}
+
+/* Estilos para botões de desconto e provento */
+.btn-discount, .btn-provento {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza o conteúdo */
+}
+
+/* Atualização para alinhar as labels de desconto à esquerda */
+.btn-discount {
+    justify-content: flex-start; /* Alinha à esquerda */
+}
+
+/* Classe adicional para alinhar elementos à esquerda, caso necessário */
+.text-left {
+    justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+}
+
+/* Estilos para botões de desconto específicos */
+.btn-discount i {
+    color: var(--discount-icon-color);
+    margin-right: 5px;
+}
+
+.btn-provento i {
+    color: var(--provento-icon-color);
+    margin-right: 5px;
+}
+
+/* Responsividade da tabela */
+.table-responsive {
+    margin-top: 30px;
+}
+
+/* Alinhamento das células da tabela */
+.table th, .table td {
     vertical-align: middle;
+    text-align: center;
 }
 
-.table {
-    margin-top: 20px;
+/* Alinhamento das descrições e valores na tabela */
+.table th:nth-child(2), .table td:nth-child(2) {
+    text-align: left;
 }
 
-.table thead th {
-    background-color: #343a40;
+.table th:nth-child(3), .table td:nth-child(3) {
+    text-align: left;
+}
+
+/* Tamanho dos ícones na tabela */
+.table .bi {
+    font-size: 1.2rem;
+}
+
+/* Estilos para telas menores (tablets) */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    label, input, select, p {
+        font-size: 0.95rem;
+    }
+
+    .btn-custom {
+        font-size: 0.95rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Estilos para telas muito pequenas (celulares) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    label, input, select, p {
+        font-size: 0.9rem;
+    }
+
+    .btn-custom {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+}
+
+/* Animação de fade-in para o corpo */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Estilos para cabeçalhos de modais */
+.modal-header {
+    background-color: var(--gradient-start);
     color: #fff;
 }
 
-.table tbody td {
-    vertical-align: middle;
-}
-
-.no-wrap {
-    white-space: nowrap;
-}
-
 .modal-title {
-    font-weight: 600;
-    color: #343a40;
+    font-family: var(--font-secondary);
 }
 
-.modal-body {
-    padding: 20px;
+/* Estilos para botões primários nos rodapés dos modais */
+.modal-footer .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-.form-check-label {
-    margin-left: 10px;
-    color: #495057;
+/* Efeito hover nos botões primários dos modais */
+.modal-footer .btn-primary:hover {
+    background-color: var(--gradient-end);
+    border-color: var(--gradient-end);
 }
 
-.form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+/* Ajuste de largura para inputs específicos na tabela */
+#adicTempoServico {
+    width: 8ch;
 }
 
-.form-check-input {
-    cursor: pointer;
+#apcPercent {
+    width: 10ch;
 }
 
-.add-reajuste-btn,
-.remove-reajuste-btn {
+#numeroBeneficiarios {
+    width: 8ch;
+}
+
+/* Estilos personalizados para o cabeçalho da tabela */
+.table-custom-header {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.table-custom-header th {
+    border-bottom: 2px solid var(--shadow-color);
+    text-align: center;
+    font-family: var(--font-secondary);
+    font-size: 1rem;
+}
+
+/* Estilos para linhas alternadas da tabela */
+#salaryTable tbody tr:nth-child(even) {
+    background-color: var(--background-color);
+}
+
+#salaryTable tbody tr:nth-child(odd) {
+    background-color: var(--container-bg);
+}
+
+/* Estilos gerais para células da tabela */
+#salaryTable td {
+    vertical-align: middle;
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    color: var(--secondary-color);
+}
+
+/* Alinhamento dos valores na tabela */
+#salaryTable td:nth-child(3) {
+    text-align: left;
+}
+
+/* Estilo dos ícones na tabela */
+#salaryTable .bi {
+    color: inherit;
+    margin-right: 5px;
+}
+
+/* Estilos para linhas de total e líquido */
+#salaryTable .total-row {
+    font-weight: bold;
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+#salaryTable .total-row td {
+    border-top: 2px solid var(--shadow-color);
+}
+
+/* Efeito hover nas linhas da tabela */
+#salaryTable tbody tr:hover {
+    background-color: rgba(78, 115, 223, 0.1);
+}
+
+/* Responsividade adicional para a tabela em telas menores */
+@media (max-width: 768px) {
+    #salaryTable th, #salaryTable td {
+        font-size: 0.85rem;
+        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    #salaryTable th, #salaryTable td {
+        font-size: 0.75rem;
+        padding: 4px;
+    }
+}
+
+/* Ajustes de altura para o botão de adicionar reajuste */
+#addReajusteBtn {
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.add-reajuste-btn:hover,
-.remove-reajuste-btn:hover {
-    background-color: #e2e6ea;
+/* Ajustes de altura para os elementos dentro do contêiner de reajustes */
+#reajustesContainer .input-group span {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@media (max-width: 768px) {
-    .row .col-md-6,
-    .row .col-md-4,
-    .row .col-md-3 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-    
-    .input-percent {
-        width: 100% !important;
-        margin-top: 5px;
-    }
-
-    .modal-dialog {
-        margin: 10px;
-    }
-
-    .modal-content {
-        padding: 10px;
-    }
+#reajustesContainer .input-group input[type=number] {
+    height: 40px;
 }
 
-@media (max-width: 576px) {
-    .row .col-md-3 label,
-    .row .col-md-4 label {
-        margin-top: 10px;
-    }
-
-    .modal-body {
-        padding: 10px;
-    }
-
-    .form-check-label {
-        margin-left: 8px;
-        font-size: 0.9rem;
-    }
-
-    .form-check-input {
-        transform: scale(0.9);
-    }
-}
-
-.add-reajuste-btn i,
-.remove-reajuste-btn i {
-    pointer-events: none;
-}
-
+/* Estilos específicos para a impressão */
 @media print {
     body * {
         visibility: hidden;
@@ -139,8 +367,8 @@ h1 {
         top: 0;
         left: 0;
         text-align: center;
-        font-size: 16pt;
-        margin-bottom: 20px;
+        font-size: 18pt;
+        margin-bottom: 25px;
         background-color: #fff;
         width: 100%;
         font-family: 'Roboto', sans-serif;
@@ -149,21 +377,24 @@ h1 {
 
     #salaryTable {
         position: absolute;
-        top: 50px;
+        top: 60px;
         left: 0;
         width: 100%;
         background-color: #fff;
         font-family: 'Roboto', sans-serif;
         color: #000;
+        page-break-inside: avoid;
     }
 
     #salaryTable th, #salaryTable td {
         font-size: 12pt;
+        padding: 8px;
     }
 
     #salaryTable thead th {
         background-color: #fff;
         color: #000;
+        border-bottom: 1px solid #000;
     }
 
     #salaryTable input {
@@ -175,56 +406,27 @@ h1 {
     }
 
     body {
-        margin: 20mm;
+        margin: 15mm;
         background-color: #fff;
     }
+
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+
+    .total-row {
+        background-color: var(--secondary-color);
+        color: #fff;
+    }
+
+    .total-row td {
+        border-top: 2px solid var(--shadow-color);
+    }
 }
 
-/* Estilos adicionais para o modal de Contribuições Sindicais */
-#contribSindicalModal .modal-body form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-#contribSindicalModal .form-check.form-switch {
+/* Estilos adicionais para ajustar alturas */
+.remove-reajuste-btn {
+    height: 40px; /* Altura definida conforme solicitado */
     display: flex;
     align-items: center;
-}
-
-#contribSindicalModal .form-check-label {
-    margin-left: 8px;
-}
-
-/* Estilos para os botões de confirmação no modal */
-#contribSindicalModal .modal-footer .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-#contribSindicalModal .modal-footer .btn-primary:hover {
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
-}
-
-/* Ajustes para garantir espaçamento consistente nos modais */
-.modal-content {
-    border-radius: 8px;
-}
-
-.modal-header,
-.modal-footer {
-    border: none;
-}
-
-.modal-body {
-    padding: 20px 30px;
-}
-
-/* Responsividade para os switches no modal */
-@media (max-width: 768px) {
-    #contribSindicalModal .form-check.form-switch {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    justify-content: center;
 }
