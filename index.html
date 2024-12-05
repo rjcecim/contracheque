@@ -15,199 +15,197 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Container principal com margens superior e inferior -->
-    <div class="container mt-5 mb-5">
-        <!-- Título centralizado -->
-        <h1 class="text-center mb-4">Simulador de Contracheque</h1>
-        
-        <!-- Seleção de Cargo -->
-        <div class="mb-3">
-            <label for="cargo" class="form-label"><i class="bi bi-person-workspace"></i> Cargo:</label>
-            <select id="cargo" class="form-select" aria-label="Selecione o cargo">
-                <option value="" selected disabled>Selecione um cargo</option>
-                <!-- Opções serão preenchidas dinamicamente via JavaScript -->
+    <!-- Estrutura principal sem a div container para layout full-width -->
+    <!-- Título centralizado -->
+    <h1 class="text-center mb-4">Simulador de Contracheque</h1>
+    
+    <!-- Seleção de Cargo -->
+    <div class="mb-3">
+        <label for="cargo" class="form-label"><i class="bi bi-person-workspace"></i> Cargo:</label>
+        <select id="cargo" class="form-select" aria-label="Selecione o cargo">
+            <option value="" selected disabled>Selecione um cargo</option>
+            <!-- Opções serão preenchidas dinamicamente via JavaScript -->
+        </select>
+    </div>
+    
+    <!-- Linha com várias seleções e inputs -->
+    <div class="row">
+        <!-- Seleção de Classe -->
+        <div class="col-md-3 mb-3">
+            <label for="classe" class="form-label"><i class="bi bi-tag"></i> Classe:</label>
+            <select id="classe" class="form-select" disabled aria-label="Selecione a classe">
+                <option value="" selected disabled>Selecione a classe</option>
+                <!-- Opções serão preenchidas dinamicamente -->
             </select>
         </div>
-        
-        <!-- Linha com várias seleções e inputs -->
-        <div class="row">
-            <!-- Seleção de Classe -->
-            <div class="col-md-3 mb-3">
-                <label for="classe" class="form-label"><i class="bi bi-tag"></i> Classe:</label>
-                <select id="classe" class="form-select" disabled aria-label="Selecione a classe">
-                    <option value="" selected disabled>Selecione a classe</option>
-                    <!-- Opções serão preenchidas dinamicamente -->
-                </select>
-            </div>
-            <!-- Seleção de Referência -->
-            <div class="col-md-3 mb-3">
-                <label for="referencia" class="form-label"><i class="bi bi-card-text"></i> Referência:</label>
-                <select id="referencia" class="form-select" disabled aria-label="Selecione a referência">
-                    <option value="" selected disabled>Selecione a referência</option>
-                    <!-- Opções serão preenchidas dinamicamente -->
-                </select>
-            </div>
-            <!-- Seleção de Títulos Acadêmicos -->
-            <div class="col-md-3 mb-3">
-                <label for="titulos" class="form-label"><i class="bi bi-award"></i> Títulos:</label>
-                <select id="titulos" class="form-select" aria-label="Selecione os títulos">
-                    <option value="nenhum" selected>Nenhum</option>
-                    <option value="especializacao">Especialização</option>
-                    <option value="mestrado">Mestrado</option>
-                    <option value="doutorado">Doutorado</option>
-                </select>
-            </div>
-            <!-- Seleção de Cursos Adicionais -->
-            <div class="col-md-3 mb-3">
-                <label for="cursos" class="form-label"><i class="bi bi-book"></i> Cursos:</label>
-                <select id="cursos" class="form-select" aria-label="Selecione se possui cursos">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
+        <!-- Seleção de Referência -->
+        <div class="col-md-3 mb-3">
+            <label for="referencia" class="form-label"><i class="bi bi-card-text"></i> Referência:</label>
+            <select id="referencia" class="form-select" disabled aria-label="Selecione a referência">
+                <option value="" selected disabled>Selecione a referência</option>
+                <!-- Opções serão preenchidas dinamicamente -->
+            </select>
         </div>
+        <!-- Seleção de Títulos Acadêmicos -->
+        <div class="col-md-3 mb-3">
+            <label for="titulos" class="form-label"><i class="bi bi-award"></i> Títulos:</label>
+            <select id="titulos" class="form-select" aria-label="Selecione os títulos">
+                <option value="nenhum" selected>Nenhum</option>
+                <option value="especializacao">Especialização</option>
+                <option value="mestrado">Mestrado</option>
+                <option value="doutorado">Doutorado</option>
+            </select>
+        </div>
+        <!-- Seleção de Cursos Adicionais -->
+        <div class="col-md-3 mb-3">
+            <label for="cursos" class="form-label"><i class="bi bi-book"></i> Cursos:</label>
+            <select id="cursos" class="form-select" aria-label="Selecione se possui cursos">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
+        </div>
+    </div>
 
-        <div class="row">
-            <!-- Seleção de Função Gratificada -->
-            <div class="col-md-3 mb-3">
-                <label for="funcaoGratificada" class="form-label"><i class="bi bi-star-fill"></i> Função Gratificada:</label>
-                <select id="funcaoGratificada" class="form-select" aria-label="Selecione a função gratificada">
-                    <option value="nenhum" selected>Nenhum</option>
-                    <option value="gerente">Gerente</option>
-                    <option value="coordenador">Coordenador</option>
-                </select>
-            </div>
-            <!-- Seleção de Férias -->
-            <div class="col-md-3 mb-3">
-                <label for="ferias" class="form-label"><i class="bi bi-calendar-check"></i> Férias:</label>
-                <select id="ferias" class="form-select" aria-label="Selecione se está em férias">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
-            <!-- Seleção de Abono Permanência -->
-            <div class="col-md-3 mb-3">
-                <label for="abonoPermanencia" class="form-label"><i class="bi bi-patch-check"></i> Abono Permanência:</label>
-                <select id="abonoPermanencia" class="form-select" aria-label="Selecione se possui abono permanência">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
-            <!-- Input de Número de Dependentes -->
-            <div class="col-md-3 mb-3">
-                <label for="numeroDependentes" class="form-label"><i class="bi bi-people-fill"></i> Número de Dependentes:</label>
-                <input type="number" id="numeroDependentes" class="form-control" value="0" min="0" step="1" aria-label="Número de dependentes">
-            </div>
+    <div class="row">
+        <!-- Seleção de Função Gratificada -->
+        <div class="col-md-3 mb-3">
+            <label for="funcaoGratificada" class="form-label"><i class="bi bi-star-fill"></i> Função Gratificada:</label>
+            <select id="funcaoGratificada" class="form-select" aria-label="Selecione a função gratificada">
+                <option value="nenhum" selected>Nenhum</option>
+                <option value="gerente">Gerente</option>
+                <option value="coordenador">Coordenador</option>
+            </select>
         </div>
+        <!-- Seleção de Férias -->
+        <div class="col-md-3 mb-3">
+            <label for="ferias" class="form-label"><i class="bi bi-calendar-check"></i> Férias:</label>
+            <select id="ferias" class="form-select" aria-label="Selecione se está em férias">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
+        </div>
+        <!-- Seleção de Abono Permanência -->
+        <div class="col-md-3 mb-3">
+            <label for="abonoPermanencia" class="form-label"><i class="bi bi-patch-check"></i> Abono Permanência:</label>
+            <select id="abonoPermanencia" class="form-select" aria-label="Selecione se possui abono permanência">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
+        </div>
+        <!-- Input de Número de Dependentes -->
+        <div class="col-md-3 mb-3">
+            <label for="numeroDependentes" class="form-label"><i class="bi bi-people-fill"></i> Número de Dependentes:</label>
+            <input type="number" id="numeroDependentes" class="form-control" value="0" min="0" step="1" aria-label="Número de dependentes">
+        </div>
+    </div>
 
-        <div class="row">
-            <!-- Descontos Diversos -->
-            <div class="col-md-3 mb-3">
-                <label for="desconto1" class="form-label btn-discount text-left">
-                    <i class="bi bi-wallet2"></i> TCE-UNIMED BELÉM:
-                </label>
-                <select id="desconto1" class="form-select" aria-label="Selecione se deseja desconto TCE-UNIMED BELÉM">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="desconto2" class="form-label btn-discount text-left">
-                    <i class="bi bi-wallet2"></i> CONTRIBUIÇÃO SINDICAL:
-                </label>
-                <select id="desconto2" class="form-select" aria-label="Selecione se deseja desconto SINDICONTAS-PA CONTRIBUIÇÃO">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="desconto3" class="form-label btn-discount text-left">
-                    <i class="bi bi-wallet2"></i> ASTCEMP-MENSALIDADE:
-                </label>
-                <select id="desconto3" class="form-select" aria-label="Selecione se deseja desconto ASTCEMP-MENSALIDADE">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="desconto4" class="form-label btn-discount text-left">
-                    <i class="bi bi-wallet2"></i> ASTCEMP-UNIODONTO:
-                </label>
-                <select id="desconto4" class="form-select" aria-label="Selecione se deseja desconto ASTCEMP-UNIODONTO">
-                    <option value="nao" selected>Não</option>
-                    <option value="sim">Sim</option>
-                </select>
-            </div>
+    <div class="row">
+        <!-- Descontos Diversos -->
+        <div class="col-md-3 mb-3">
+            <label for="desconto1" class="form-label btn-discount text-left">
+                <i class="bi bi-wallet2"></i> TCE-UNIMED BELÉM:
+            </label>
+            <select id="desconto1" class="form-select" aria-label="Selecione se deseja desconto TCE-UNIMED BELÉM">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
         </div>
+        <div class="col-md-3 mb-3">
+            <label for="desconto2" class="form-label btn-discount text-left">
+                <i class="bi bi-wallet2"></i> CONTRIBUIÇÃO SINDICAL:
+            </label>
+            <select id="desconto2" class="form-select" aria-label="Selecione se deseja desconto SINDICONTAS-PA CONTRIBUIÇÃO">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="desconto3" class="form-label btn-discount text-left">
+                <i class="bi bi-wallet2"></i> ASTCEMP-MENSALIDADE:
+            </label>
+            <select id="desconto3" class="form-select" aria-label="Selecione se deseja desconto ASTCEMP-MENSALIDADE">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="desconto4" class="form-label btn-discount text-left">
+                <i class="bi bi-wallet2"></i> ASTCEMP-UNIODONTO:
+            </label>
+            <select id="desconto4" class="form-select" aria-label="Selecione se deseja desconto ASTCEMP-UNIODONTO">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim</option>
+            </select>
+        </div>
+    </div>
 
-        <!-- Seção de Reajustes -->
-        <div class="reajustes-section mb-4">
-            <label class="form-label"><i class="bi bi-arrow-repeat"></i> Reajustes:</label>
-            <div id="reajustesContainer">
-                <!-- Grupo inicial de reajuste -->
-                <div class="input-group mb-2">
-                    <span class="input-group-text">Qual o valor do 1º reajuste?</span>
-                    <input type="number" class="form-control reajuste-input" placeholder="0,00" step="0.01" min="0" aria-label="Valor do reajuste">
-                    <span class="input-group-text">%</span>
-                    <button class="btn btn-outline-secondary add-reajuste-btn" type="button" id="addReajusteBtn">
-                        <i class="bi bi-plus"></i>
-                    </button>
-                </div>
+    <!-- Seção de Reajustes -->
+    <div class="reajustes-section mb-4">
+        <label class="form-label"><i class="bi bi-arrow-repeat"></i> Reajustes:</label>
+        <div id="reajustesContainer">
+            <!-- Grupo inicial de reajuste -->
+            <div class="input-group mb-2">
+                <span class="input-group-text">Qual o valor do 1º reajuste?</span>
+                <input type="number" class="form-control reajuste-input" placeholder="0,00" step="0.01" min="0" aria-label="Valor do reajuste">
+                <span class="input-group-text">%</span>
+                <button class="btn btn-outline-secondary add-reajuste-btn" type="button" id="addReajusteBtn">
+                    <i class="bi bi-plus"></i>
+                </button>
             </div>
         </div>
+    </div>
 
-        <!-- Título para impressão, oculto na visualização padrão -->
-        <h2 id="printTitle" class="d-none d-print-block">Folha de Pagamento</h2>
-        <!-- Tabela de Simulação de Contracheque -->
-        <div class="table-responsive">
-            <table id="salaryTable" class="table table-striped table-bordered mt-4">
-                <thead class="table-custom-header">
-                    <tr>
-                        <th>RUBRICA</th>
-                        <th>DESCRIÇÃO</th>
-                        <th>VALOR (R$)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Linhas iniciais da tabela com valores padrão -->
-                    <tr>
-                        <td>P001</td>
-                        <td class="provento"><i class="bi bi-cash-stack"></i> VENCIMENTO</td>
-                        <td id="vencimentoBase">0,00</td>
-                    </tr>
-                    <tr>
-                        <td>P002</td>
-                        <td class="provento"><i class="bi bi-award"></i> GRAT. NÍVEL SUPERIOR</td>
-                        <td id="gratNivelSuperior">0,00</td>
-                    </tr>
-                    <tr>
-                        <td>P031</td>
-                        <!-- Adicionando ícone bi-cash-stack para Provento -->
-                        <td class="provento no-wrap"><i class="bi bi-cash-stack"></i> ADIC. TEMPO SERVIÇO (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block input-percent" aria-label="Adicional de Tempo de Serviço">%)</td>
-                        <td id="valorP031">0,00</td>
-                    </tr>
-                    <tr>
-                        <td>P331</td>
-                        <!-- Adicionando ícone bi-cash-stack para Provento -->
-                        <td class="provento no-wrap"><i class="bi bi-cash-stack"></i> ABONO PRODUTIVIDADE COLETIVA (<input type="number" id="apcPercent" value="100" step="0.01" min="0" max="100" class="form-control d-inline-block input-percent" aria-label="Percentual de Abono Produtividade">%)</td>
-                        <td id="valorP331">0,00</td>
-                    </tr>
-                    <tr id="rowD042" style="display: none;">
-                        <td>D042</td>
-                        <!-- Adicionando ícone bi-wallet2 para Desconto -->
-                        <td class="desconto no-wrap"><i class="bi bi-wallet2"></i> ASTCEMP-UNIODONTO | BENEFICIÁRIOS (<input type="number" id="numeroBeneficiarios" value="0" step="1" min="0" class="form-control d-inline-block input-percent" aria-label="Número de beneficiários">)</td>
-                        <td id="valorD042">0,00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <!-- Título para impressão, oculto na visualização padrão -->
+    <h2 id="printTitle" class="d-none d-print-block">Folha de Pagamento</h2>
+    <!-- Tabela de Simulação de Contracheque -->
+    <div class="table-responsive">
+        <table id="salaryTable" class="table table-striped table-bordered mt-4">
+            <thead class="table-custom-header">
+                <tr>
+                    <th>RUBRICA</th>
+                    <th>DESCRIÇÃO</th>
+                    <th>VALOR (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas iniciais da tabela com valores padrão -->
+                <tr>
+                    <td>P001</td>
+                    <td class="provento"><i class="bi bi-cash-stack"></i> VENCIMENTO</td>
+                    <td id="vencimentoBase">0,00</td>
+                </tr>
+                <tr>
+                    <td>P002</td>
+                    <td class="provento"><i class="bi bi-award"></i> GRAT. NÍVEL SUPERIOR</td>
+                    <td id="gratNivelSuperior">0,00</td>
+                </tr>
+                <tr>
+                    <td>P031</td>
+                    <!-- Adicionando ícone bi-cash-stack para Provento -->
+                    <td class="provento no-wrap"><i class="bi bi-cash-stack"></i> ADIC. TEMPO SERVIÇO (<input type="number" id="adicTempoServico" value="0" step="5" min="0" max="60" class="form-control d-inline-block input-percent" aria-label="Adicional de Tempo de Serviço">%)</td>
+                    <td id="valorP031">0,00</td>
+                </tr>
+                <tr>
+                    <td>P331</td>
+                    <!-- Adicionando ícone bi-cash-stack para Provento -->
+                    <td class="provento no-wrap"><i class="bi bi-cash-stack"></i> ABONO PRODUTIVIDADE COLETIVA (<input type="number" id="apcPercent" value="100" step="0.01" min="0" max="100" class="form-control d-inline-block input-percent" aria-label="Percentual de Abono Produtividade">%)</td>
+                    <td id="valorP331">0,00</td>
+                </tr>
+                <tr id="rowD042" style="display: none;">
+                    <td>D042</td>
+                    <!-- Adicionando ícone bi-wallet2 para Desconto -->
+                    <td class="desconto no-wrap"><i class="bi bi-wallet2"></i> ASTCEMP-UNIODONTO | BENEFICIÁRIOS (<input type="number" id="numeroBeneficiarios" value="0" step="1" min="0" class="form-control d-inline-block input-percent" aria-label="Número de beneficiários">)</td>
+                    <td id="valorD042">0,00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-        <!-- Botão para imprimir a folha de pagamento -->
-        <div class="d-flex justify-content-end mt-4">
-            <button id="printButton" class="btn btn-success btn-custom">
-                <i class="bi bi-printer"></i> Imprimir Folha de Pagamento
-            </button>
-        </div>
+    <!-- Botão para imprimir a folha de pagamento -->
+    <div class="d-flex justify-content-end mt-4">
+        <button id="printButton" class="btn btn-success btn-custom">
+            <i class="bi bi-printer"></i> Imprimir Folha de Pagamento
+        </button>
     </div>
 
     <!-- Modal para limitar o Adicional de Tempo de Serviço -->

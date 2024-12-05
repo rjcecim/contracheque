@@ -33,21 +33,6 @@ body {
     animation: fadeIn 1s ease-in-out; /* Animação de entrada suave */
 }
 
-/* Estilo do container principal */
-.container {
-    background-color: var(--container-bg);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px var(--shadow-color);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-/* Efeito hover no container para elevação */
-.container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px var(--shadow-color);
-}
-
 /* Estilo do título principal */
 h1 {
     font-family: var(--font-secondary);
@@ -203,10 +188,6 @@ input:focus, select:focus {
 @media (max-width: 480px) {
     h1 {
         font-size: 1.5rem;
-    }
-
-    .container {
-        padding: 20px;
     }
 
     label, input, select, p {
