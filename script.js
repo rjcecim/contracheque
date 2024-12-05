@@ -646,15 +646,15 @@ function substituirInputsPorTextos() {
         const p331Value = p331Input.value;
 
         // Substitui os inputs por textos estáticos
-        p031Cell.innerHTML = `ADIC. TEMPO SERVIÇO (${p031Value}%)`;
-        p331Cell.innerHTML = `ABONO PRODUTIVIDADE COLETIVA (${p331Value}%)`;
+        p031Cell.innerHTML = `<i class="bi bi-cash-stack"></i> ADIC. TEMPO SERVIÇO (${p031Value}%)`;
+        p331Cell.innerHTML = `<i class="bi bi-cash-stack"></i> ABONO PRODUTIVIDADE COLETIVA (${p331Value}%)`;
     }
 
     if (beneficiariosInput) {
         const beneficiariosCell = beneficiariosInput.parentElement;
         beneficiariosCell.dataset.originalContent = beneficiariosCell.innerHTML;
         const beneficiariosValue = beneficiariosInput.value;
-        beneficiariosCell.innerHTML = `ASTCEMP-UNIODONTO | BENEFICIÁRIOS (${beneficiariosValue})`;
+        beneficiariosCell.innerHTML = `<i class="bi bi-wallet2"></i> ASTCEMP-UNIODONTO | BENEFICIÁRIOS (${beneficiariosValue})`;
     }
 }
 

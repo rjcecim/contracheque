@@ -278,8 +278,8 @@ input:focus, select:focus {
 
 /* Estilo dos ícones na tabela */
 #salaryTable .bi {
-    color: inherit;
-    margin-right: 5px;
+    visibility: visible;
+    font-size: 1.2rem;
 }
 
 /* Estilos para linhas de total e líquido */
