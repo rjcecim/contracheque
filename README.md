@@ -95,5 +95,5 @@ contracheque-main/
 
 ---
 <div align="center">
-  Desenvolvido para Ruy Cecim.
+  Desenvolvido por Ruy Cecim.
 </div>
