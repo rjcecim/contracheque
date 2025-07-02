@@ -4,8 +4,7 @@
   
   ![Status](https://img.shields.io/badge/Status-Em%20Produção-brightgreen)
   ![Versão](https://img.shields.io/badge/Versão-1.0.0-blue)
-  ![Licença](https://img.shields.io/badge/Licença-MIT-orange)
-</div>
+  </div>
 
 ## 🌟 Visão Geral
 
@@ -82,24 +81,19 @@ contracheque-main/
 
 ## 📝 Notas Importantes
 
-- Os cálculos são baseados nas tabelas oficiais do TCE/PA
+- Os cálculos são baseados nas tabelas oficiais
 - Valores sujeitos a alterações conforme legislação
-- Consulte sempre o departamento de RH para informações oficiais
 
 ## 📅 Histórico de Atualizações
 
-### [1.0.0] - 02/07/2025
+### [1.0.0] - 05/12/2024
 #### Adicionado
 - Versão inicial do simulador
 - Cálculo de vencimentos baseado em cargo/classe/referência
 - Cálculo automático de benefícios e descontos
 - Interface responsiva
 
-## 📄 Licença
-
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
 ---
 <div align="center">
-  Desenvolvido para o Tribunal de Contas do Estado do Pará
+  Desenvolvido para Ruy Cecim.
 </div>
